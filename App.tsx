@@ -1,22 +1,32 @@
+import "react-native-gesture-handler";
+
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
 import HomeScreen from "@/screens/home";
+import EventDetails from "@/screens/event-details";
+import { CardStyleInterpolators } from "@react-navigation/stack";
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <HomeScreen />
+    <>
       <StatusBar style='light' />
-    </View>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name='Home' component={HomeScreen} />
+          <Stack.Screen
+            name='EventDetails'
+            component={EventDetails}
+            options={{
+              cardStyleInterpolator:
+                CardStyleInterpolators.forModalPresentationIOS,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "black",
-    paddingTop: 80,
-    paddingHorizontal: 20,
-  },
-});

@@ -1,18 +1,26 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { shadeColor } from "@/utils/color";
 
-const Event = ({ details }) => {
+const Event = ({ details, onPress }) => {
+  const colors = {
+    default: details.color,
+    light: `${details.color}3D`,
+    dark: shadeColor(details.color, -50),
+  };
+
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={onPress}
       style={{
-        backgroundColor: details.color,
+        backgroundColor: colors.light,
         padding: 20,
         borderRadius: 20,
       }}
     >
       <Text
         style={{
-          color: shadeColor(details.color, -60),
+          color: colors.dark,
           fontSize: 24,
           fontWeight: "600",
         }}
@@ -30,7 +38,7 @@ const Event = ({ details }) => {
         <View>
           <Text
             style={{
-              color: shadeColor(details.color, -60),
+              color: colors.dark,
               fontWeight: "600",
               fontSize: 21,
             }}
@@ -39,7 +47,7 @@ const Event = ({ details }) => {
           </Text>
           <Text
             style={{
-              color: shadeColor(details.color, -60),
+              color: colors.dark,
               fontWeight: "600",
               fontSize: 16,
             }}
@@ -50,7 +58,7 @@ const Event = ({ details }) => {
 
         <View
           style={{
-            backgroundColor: shadeColor(details.color, -60),
+            backgroundColor: colors.light,
             paddingHorizontal: 20,
             borderRadius: 40,
             justifyContent: "center",
@@ -58,7 +66,7 @@ const Event = ({ details }) => {
         >
           <Text
             style={{
-              color: details.color,
+              color: colors.dark,
               fontWeight: "600",
             }}
           >
@@ -69,7 +77,7 @@ const Event = ({ details }) => {
         <View>
           <Text
             style={{
-              color: shadeColor(details.color, -60),
+              color: colors.dark,
               fontWeight: "600",
               fontSize: 21,
             }}
@@ -78,7 +86,7 @@ const Event = ({ details }) => {
           </Text>
           <Text
             style={{
-              color: shadeColor(details.color, -60),
+              color: colors.dark,
               fontSize: 16,
             }}
           >
@@ -86,7 +94,7 @@ const Event = ({ details }) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

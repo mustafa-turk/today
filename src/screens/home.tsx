@@ -1,4 +1,10 @@
-import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  ScrollView,
+} from "react-native";
 
 import Event from "@/components/event";
 import { PlusIcon } from "@/components/icon";
@@ -6,62 +12,74 @@ import { PlusIcon } from "@/components/icon";
 import { useCalendar } from "@/hooks/use-calendar";
 import { getMonth, getDayDigits } from "@/utils/date";
 
-const HomeScreen = () => {
-  const { events } = useCalendar();
+const HomeScreen = ({ navigation }) => {
+  const { events, calendars } = useCalendar();
 
   return (
-    <>
-      <Text style={{ color: "#d4d4d4", fontWeight: "bold", fontSize: 32 }}>
-        Today
-      </Text>
-      <Text style={{ color: "#737373", fontWeight: "bold", fontSize: 32 }}>
-        {`${getMonth()} ${getDayDigits()}`}
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Today</Text>
+      <Text style={styles.date}>{`${getMonth()} ${getDayDigits()}`}</Text>
 
-      <TouchableOpacity
-        style={{ backgroundColor: "#171717", borderRadius: 20, marginTop: 20 }}
-      >
-        <Text
-          style={{
-            color: "#525252",
-            textAlign: "center",
-            padding: 20,
-            fontSize: 30,
-            fontWeight: "600",
-          }}
-        >
+      <TouchableHighlight activeOpacity={0.7} style={styles.button}>
+        <Text style={styles.buttonIcon}>
           <PlusIcon size={24} />
         </Text>
-      </TouchableOpacity>
+      </TouchableHighlight>
 
-      <Modal animationType='slide' transparent visible>
-        <View
-          style={{
-            height: "64%",
-            marginTop: "auto",
-            backgroundColor: "#e5e5e5",
-            borderTopRightRadius: 30,
-            borderTopLeftRadius: 30,
-          }}
+      <View style={styles.eventsContainer}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.eventsList}
         >
-          <ScrollView
-            style={{
-              paddingHorizontal: 16,
-              paddingVertical: 20,
-              borderTopRightRadius: 30,
-              borderTopLeftRadius: 30,
-            }}
-          >
-            <View style={{ gap: 16, paddingBottom: 48 }}>
-              {events?.map((event) => (
-                <Event details={event} />
-              ))}
-            </View>
-          </ScrollView>
-        </View>
-      </Modal>
-    </>
+          <View style={{ gap: 16, marginBottom: 48 }}>
+            {events?.map((event, key) => (
+              <Event
+                details={event}
+                key={key}
+                onPress={() =>
+                  navigation.navigate("EventDetails", { event, calendars })
+                }
+              />
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+    paddingTop: 80,
+    paddingHorizontal: 20,
+  },
+  title: { color: "#d4d4d4", fontWeight: "bold", fontSize: 32 },
+  date: { color: "#737373", fontWeight: "bold", fontSize: 32 },
+  button: { backgroundColor: "#171717", borderRadius: 20, marginTop: 20 },
+  buttonIcon: {
+    color: "#525252",
+    textAlign: "center",
+    padding: 20,
+    fontSize: 30,
+  },
+  eventsContainer: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    right: 0,
+    height: "72%",
+    backgroundColor: "white",
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+  },
+  eventsList: {
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+  },
+});
 
 export default HomeScreen;

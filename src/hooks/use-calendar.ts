@@ -16,7 +16,14 @@ type Event = {
   duration: number;
 };
 
+type Calendar = {
+  color: string;
+  title: string;
+  id: string;
+};
+
 export const useCalendar = () => {
+  const [calendars, setCalendars] = useState<Calendar[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
@@ -48,12 +55,21 @@ export const useCalendar = () => {
               title: event.title,
               startTime: getTimeFromString(event.startDate),
               endTime: getTimeFromString(event.endDate),
+              startDate: event.startDate,
+              endDate: event.endDate,
               duration: timeBetweenDates(event.startDate, event.endDate),
             }))
+        );
+        setCalendars(
+          calendars.map((calendar) => ({
+            title: calendar.title,
+            color: calendar.color,
+            id: calendar.id,
+          }))
         );
       }
     })();
   }, []);
 
-  return { events };
+  return { events, calendars };
 };
