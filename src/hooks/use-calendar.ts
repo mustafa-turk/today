@@ -54,6 +54,7 @@ export const useCalendar = () => {
           )
           .map((event: Calendar.Event) => ({
             id: event.id,
+            calendarId: event.calendarId,
             color: find(calendars, { id: event.calendarId }).color,
             title: event.title,
             startTime: getTimeFromString(event.startDate),

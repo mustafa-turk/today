@@ -7,7 +7,9 @@ import {
   TextInput,
 } from "react-native";
 import * as Calendar from "expo-calendar";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 
 const EventDetails = ({ navigation, route }) => {
   const { event, calendars } = route.params;
@@ -16,6 +18,9 @@ const EventDetails = ({ navigation, route }) => {
   const onSave = async () => {
     await Calendar.updateEventAsync(updatedEvent.id, {
       title: updatedEvent.title,
+      startDate: updatedEvent.startDate,
+      endDate: updatedEvent.endDate,
+      calendarId: updatedEvent.calendarId,
     });
     navigation.goBack();
   };
@@ -28,10 +33,29 @@ const EventDetails = ({ navigation, route }) => {
     setUpdatedEvent({ ...updatedEvent, title });
   };
 
-  const onTimeChange = (event: any) => {
-    if (event.type === "dismissed") {
-      // update here startDate or endDate
+  const onStartTimeChange = (event: DateTimePickerEvent, date: Date) => {
+    if (event.type !== "dismissed") {
+      setUpdatedEvent({
+        ...updatedEvent,
+        startDate: new Date(date),
+      });
     }
+  };
+
+  const onEndTimeChange = (event: DateTimePickerEvent, date: Date) => {
+    if (event.type !== "dismissed") {
+      setUpdatedEvent({
+        ...updatedEvent,
+        endDate: new Date(date),
+      });
+    }
+  };
+
+  const onCalendarPress = (calendarId: string) => {
+    setUpdatedEvent({
+      ...updatedEvent,
+      calendarId,
+    });
   };
 
   return (
@@ -82,12 +106,16 @@ const EventDetails = ({ navigation, route }) => {
           <TouchableOpacity
             key={key}
             activeOpacity={0.8}
+            onPress={() => onCalendarPress(calendar.id)}
             style={{
               backgroundColor: "#262626",
               padding: 12,
               borderRadius: 8,
               flexDirection: "row",
               gap: 6,
+              borderWidth: 1,
+              borderColor:
+                calendar.id === updatedEvent.calendarId ? "#525252" : "#262626",
             }}
           >
             <View
@@ -129,7 +157,7 @@ const EventDetails = ({ navigation, route }) => {
             textColor='white'
             value={new Date(event.startDate)}
             mode='time'
-            onChange={onTimeChange}
+            onChange={onStartTimeChange}
           />
         </View>
 
@@ -151,7 +179,7 @@ const EventDetails = ({ navigation, route }) => {
             textColor='white'
             value={new Date(event.endDate)}
             mode='time'
-            onChange={() => {}}
+            onChange={onEndTimeChange}
           />
         </View>
       </View>

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import Event from "@/components/event";
-import { ArrowLeft, ArrowRight } from "@/components/icon";
+import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
 
 import { useCalendar } from "@/hooks/use-calendar";
 import { getMonth, getDayDigits, getDay } from "@/utils/date";
@@ -91,6 +91,22 @@ const HomeScreen = ({ navigation }) => {
                 }
               />
             ))}
+            {events.length === 0 && (
+              <View>
+                <TouchableHighlight
+                  activeOpacity={0.7}
+                  style={{
+                    backgroundColor: "#e5e5e5",
+                    padding: 29,
+                    borderRadius: 20,
+                  }}
+                >
+                  <Text style={styles.buttonIcon}>
+                    <PlusIcon size={36} />
+                  </Text>
+                </TouchableHighlight>
+              </View>
+            )}
           </View>
         </ScrollView>
       </View>
