@@ -1,20 +1,25 @@
-export const getDayDigits = () => {
-  const date = new Date();
+import moment from "moment";
+
+export const getDay = (date: Date) => {
+  const day = moment(date).format("dddd");
+  return day;
+};
+
+export const getDayDigits = (date: Date) => {
   const day = date.toLocaleString("default", { day: "2-digit" });
   return day;
 };
 
-export const getMonth = () => {
-  const date = new Date();
+export const getMonth = (date: Date) => {
   const month = date.toLocaleString("default", { month: "long" });
   return month;
 };
 
-export const getStartAndEndOfToday = () => {
-  const start = new Date();
+export const getStartAndEndOfDay = (date: Date) => {
+  const start = new Date(date);
   start.setUTCHours(0, 0, 0, 0);
 
-  const end = new Date();
+  const end = new Date(date);
   end.setUTCHours(23, 59, 59, 999);
 
   return { start, end };

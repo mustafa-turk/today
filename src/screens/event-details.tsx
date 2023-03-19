@@ -6,17 +6,29 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
+import * as Calendar from "expo-calendar";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 const EventDetails = ({ navigation, route }) => {
   const { event, calendars } = route.params;
+  const [updatedEvent, setUpdatedEvent] = useState(event);
 
-  const onSave = () => {};
+  const onSave = async () => {
+    await Calendar.updateEventAsync(updatedEvent.id, {
+      title: updatedEvent.title,
+    });
+    navigation.goBack();
+  };
+
   const onCancel = () => {
     navigation.goBack();
   };
 
-  const onTimeChange = (event) => {
+  const onTitleChange = (title: string) => {
+    setUpdatedEvent({ ...updatedEvent, title });
+  };
+
+  const onTimeChange = (event: any) => {
     if (event.type === "dismissed") {
       // update here startDate or endDate
     }
@@ -50,8 +62,8 @@ const EventDetails = ({ navigation, route }) => {
         }}
         placeholder='Event title'
         placeholderTextColor='#d4d4d4'
-        // onChangeText={onChangeText}
-        value={event.title}
+        onChangeText={onTitleChange}
+        value={updatedEvent.title}
         autoCorrect={false}
         keyboardAppearance='dark'
         autoCapitalize='none'
@@ -111,13 +123,13 @@ const EventDetails = ({ navigation, route }) => {
         >
           <Text style={{ color: "white", fontSize: 18 }}>Starts at</Text>
           <DateTimePicker
+            locale={"en_GB"}
             themeVariant='dark'
             accentColor='white'
             textColor='white'
             value={new Date(event.startDate)}
             mode='time'
             onChange={onTimeChange}
-            is24Hour
           />
         </View>
 
@@ -133,13 +145,13 @@ const EventDetails = ({ navigation, route }) => {
         >
           <Text style={{ color: "white", fontSize: 18 }}>Ends at</Text>
           <DateTimePicker
+            locale={"en_GB"}
             themeVariant='dark'
             accentColor='white'
             textColor='white'
             value={new Date(event.endDate)}
             mode='time'
             onChange={() => {}}
-            is24Hour
           />
         </View>
       </View>

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   View,
   Text,
@@ -7,24 +8,73 @@ import {
 } from "react-native";
 
 import Event from "@/components/event";
-import { PlusIcon } from "@/components/icon";
+import { ArrowLeft, ArrowRight } from "@/components/icon";
 
 import { useCalendar } from "@/hooks/use-calendar";
-import { getMonth, getDayDigits } from "@/utils/date";
+import { getMonth, getDayDigits, getDay } from "@/utils/date";
 
 const HomeScreen = ({ navigation }) => {
-  const { events, calendars } = useCalendar();
+  const { currentDate, events, calendars, getEvents } = useCalendar();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getEvents(currentDate);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const onNextPress = async () => {
+    const nextDate = new Date(currentDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+    await getEvents(nextDate);
+  };
+
+  const onBackPress = async () => {
+    const previousDate = new Date(currentDate);
+    previousDate.setDate(previousDate.getDate() - 1);
+    await getEvents(previousDate);
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Today</Text>
-      <Text style={styles.date}>{`${getMonth()} ${getDayDigits()}`}</Text>
+      <View style={{ flexDirection: "row" }}>
+        <Text style={styles.title}>{getDay(currentDate)}, </Text>
+        <Text style={styles.date}>{`${getMonth(currentDate)} ${getDayDigits(
+          currentDate
+        )}`}</Text>
+      </View>
+      <Text style={{ ...styles.title, color: "#d4d4d4" }}>
+        {`${events.length} ${events.length === 1 ? "meeting" : "meetings"}`}
+      </Text>
 
-      <TouchableHighlight activeOpacity={0.7} style={styles.button}>
-        <Text style={styles.buttonIcon}>
-          <PlusIcon size={24} />
-        </Text>
-      </TouchableHighlight>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          gap: 10,
+        }}
+      >
+        <TouchableHighlight
+          activeOpacity={0.7}
+          style={styles.button}
+          onPress={onBackPress}
+        >
+          <Text style={styles.buttonIcon}>
+            <ArrowLeft size={24} />
+          </Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight
+          activeOpacity={0.7}
+          style={styles.button}
+          onPress={onNextPress}
+        >
+          <Text style={styles.buttonIcon}>
+            <ArrowRight size={24} />
+          </Text>
+        </TouchableHighlight>
+      </View>
 
       <View style={styles.eventsContainer}>
         <ScrollView
@@ -57,7 +107,12 @@ const styles = StyleSheet.create({
   },
   title: { color: "#d4d4d4", fontWeight: "bold", fontSize: 32 },
   date: { color: "#737373", fontWeight: "bold", fontSize: 32 },
-  button: { backgroundColor: "#171717", borderRadius: 20, marginTop: 20 },
+  button: {
+    backgroundColor: "#171717",
+    borderRadius: 20,
+    marginTop: 20,
+    flex: 1,
+  },
   buttonIcon: {
     color: "#525252",
     textAlign: "center",
