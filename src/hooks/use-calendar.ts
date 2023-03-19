@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import * as Calendar from "expo-calendar";
+import { flatten, find } from "lodash";
 
 import {
   getStartAndEndOfToday,
@@ -16,7 +17,7 @@ type Event = {
 };
 
 export const useCalendar = () => {
-  const [events, setEvents] = useState<Event[]>();
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -25,21 +26,30 @@ export const useCalendar = () => {
         const calendars = await Calendar.getCalendarsAsync(
           Calendar.EntityTypes.EVENT
         );
-        const [defaultCalendar] = calendars;
-        const { start, end } = getStartAndEndOfToday();
-        const events = await Calendar.getEventsAsync(
-          [defaultCalendar.id],
-          start,
-          end
+
+        const events = calendars.map((calendar) =>
+          Calendar.getEventsAsync(
+            [calendar.id],
+            getStartAndEndOfToday().start,
+            getStartAndEndOfToday().end
+          )
         );
+
+        const allEvents = await Promise.all(events);
+
         setEvents(
-          events.map((event) => ({
-            color: defaultCalendar.color,
-            title: event.title,
-            startTime: getTimeFromString(event.startDate),
-            endTime: getTimeFromString(event.endDate),
-            duration: timeBetweenDates(event.startDate, event.endDate),
-          }))
+          flatten(allEvents)
+            .sort(
+              (a: Calendar.Event, b: Calendar.Event) =>
+                new Date(a.startDate) - new Date(b.startDate)
+            )
+            .map((event: Calendar.Event) => ({
+              color: find(calendars, { id: event.calendarId }).color,
+              title: event.title,
+              startTime: getTimeFromString(event.startDate),
+              endTime: getTimeFromString(event.endDate),
+              duration: timeBetweenDates(event.startDate, event.endDate),
+            }))
         );
       }
     })();

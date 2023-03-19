@@ -5,12 +5,18 @@ const Event = ({ details }) => {
   return (
     <View
       style={{
-        backgroundColor: shadeColor(details.color, -90),
+        backgroundColor: details.color,
         padding: 20,
-        borderRadius: 12,
+        borderRadius: 20,
       }}
     >
-      <Text style={{ color: details.color, fontSize: 24, fontWeight: "600" }}>
+      <Text
+        style={{
+          color: shadeColor(details.color, -60),
+          fontSize: 24,
+          fontWeight: "600",
+        }}
+      >
         {details.title}
       </Text>
 
@@ -24,7 +30,7 @@ const Event = ({ details }) => {
         <View>
           <Text
             style={{
-              color: details.color,
+              color: shadeColor(details.color, -60),
               fontWeight: "600",
               fontSize: 21,
             }}
@@ -33,7 +39,7 @@ const Event = ({ details }) => {
           </Text>
           <Text
             style={{
-              color: details.color,
+              color: shadeColor(details.color, -60),
               fontWeight: "600",
               fontSize: 16,
             }}
@@ -44,7 +50,7 @@ const Event = ({ details }) => {
 
         <View
           style={{
-            backgroundColor: details.color,
+            backgroundColor: shadeColor(details.color, -60),
             paddingHorizontal: 20,
             borderRadius: 40,
             justifyContent: "center",
@@ -52,7 +58,7 @@ const Event = ({ details }) => {
         >
           <Text
             style={{
-              color: shadeColor(details.color, -90),
+              color: details.color,
               fontWeight: "600",
             }}
           >
@@ -63,7 +69,7 @@ const Event = ({ details }) => {
         <View>
           <Text
             style={{
-              color: details.color,
+              color: shadeColor(details.color, -60),
               fontWeight: "600",
               fontSize: 21,
             }}
@@ -72,8 +78,7 @@ const Event = ({ details }) => {
           </Text>
           <Text
             style={{
-              color: details.color,
-              fontWeight: "600",
+              color: shadeColor(details.color, -60),
               fontSize: 16,
             }}
           >
