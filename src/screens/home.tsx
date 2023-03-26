@@ -1,37 +1,124 @@
-import { useEffect } from "react";
+import * as React from "react";
 import {
   ScrollView, StyleSheet, Text, TouchableHighlight, View
 } from "react-native";
+import * as Calendar from "expo-calendar";
 
 import Event from "@/components/event";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
 
-import { useCalendar } from "@/hooks/use-calendar";
 import theme from "@/styles/theme";
 import { getDay, getDayDigits, getMonth } from "@/utils/date";
 
+import { flatten, find } from "lodash";
+
+import {
+  getStartAndEndOfDay,
+  timeBetweenDates,
+  getTimeFromString,
+} from "@/utils/date";
+import { useFocusEffect } from "@react-navigation/native";
+
+type Calendar = {
+  color: string;
+  title: string;
+  id: string;
+};
+
+type Event = {
+  color: string;
+  title: string;
+  startTime: string;
+  endTime: string;
+  duration: number;
+};
+
 const HomeScreen = ({ navigation, route }) => {
-  const date = route?.params?.date || new Date()
-  const { currentDate, events, calendars, getEvents, defaultCalendarId } = useCalendar(date);
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      getEvents(currentDate);
-    });
+  const [currentDate, setCurrentDate] = React.useState(new Date());
+  const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
+  const [calendars, setCalendars] = React.useState<Calendar[]>([]);
+  const [events, setEvents] = React.useState<Event[]>([]);
 
-    return unsubscribe;
-  }, [navigation]);
+  const getDefaultCalendarId = async () => {
+    const defaultCalendar = await Calendar.getDefaultCalendarAsync();
+    setDefaultCalendarId(defaultCalendar.id);
+  }
 
-  const onNextPress = async () => {
+  const setNextDay = async () => {
     const nextDate = new Date(currentDate);
     nextDate.setDate(nextDate.getDate() + 1);
-    await getEvents(nextDate);
+
+    setCurrentDate(nextDate);
+  }
+
+  const setPreviousDay = async () => {
+    const prevDate = new Date(currentDate);
+    prevDate.setDate(prevDate.getDate() - 1);
+
+    setCurrentDate(prevDate);
+  }
+
+  const getEvents = async () => {
+    const { status } = await Calendar.requestCalendarPermissionsAsync();
+
+    if (status === "granted") {
+      const cals = await Calendar.getCalendarsAsync(
+        Calendar.EntityTypes.EVENT
+      );
+
+      const events = cals.map((cal) =>
+        Calendar.getEventsAsync(
+          [cal.id],
+          getStartAndEndOfDay(currentDate).start,
+          getStartAndEndOfDay(currentDate).end
+        )
+      );
+
+      const eventsFromCalendars = await Promise.all(events);
+
+      setEvents(
+        flatten(eventsFromCalendars)
+          .sort(
+            (a: Calendar.Event, b: Calendar.Event) =>
+              new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
+          )
+          .map((event: Calendar.Event) => ({
+            id: event.id,
+            calendarId: event.calendarId,
+            color: find(cals, { id: event.calendarId }).color,
+            title: event.title,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            duration: timeBetweenDates(event.startDate, event.endDate),
+            startTime: getTimeFromString(event.startDate),
+            endTime: getTimeFromString(event.endDate),
+          }))
+      );
+
+      setCalendars(
+        cals.map((calendar) => ({
+          title: calendar.title,
+          color: calendar.color,
+          id: calendar.id,
+        }))
+      );
+    }
   };
 
-  const onBackPress = async () => {
-    const previousDate = new Date(currentDate);
-    previousDate.setDate(previousDate.getDate() - 1);
-    await getEvents(previousDate);
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      if (route.params?.date) {
+        setCurrentDate(new Date(route.params?.date))
+      }
+    }, [route.params?.date])
+  );
+
+  React.useEffect(() => {
+    (async () => {
+      await getDefaultCalendarId();
+      await getEvents();
+    })();
+  }, [currentDate]);
 
   const eventsLabel = `${events.length} ${events.length === 1 ? "event" : "events"}`;
 
@@ -52,7 +139,7 @@ const HomeScreen = ({ navigation, route }) => {
         <TouchableHighlight
           activeOpacity={0.7}
           style={styles.button}
-          onPress={onBackPress}
+          onPress={setPreviousDay}
         >
           <Text style={styles.buttonIcon}>
             <ArrowLeft size={24} />
@@ -62,7 +149,7 @@ const HomeScreen = ({ navigation, route }) => {
         <TouchableHighlight
           activeOpacity={0.7}
           style={styles.button}
-          onPress={onNextPress}
+          onPress={setNextDay}
         >
           <Text style={styles.buttonIcon}>
             <ArrowRight size={24} />
@@ -75,7 +162,7 @@ const HomeScreen = ({ navigation, route }) => {
           {eventsLabel}
         </Text>
         <TouchableHighlight
-          onPress={() => navigation.navigate("EventDetails", { defaultCalendarId, date: currentDate, calendars, isEmpty: true })}
+          onPress={() => navigation.navigate("EventDetails", { defaultCalendarId, date: currentDate.toISOString(), calendars, isEmpty: true })}
           style={{ backgroundColor: theme.NEUTRAL[900], paddingHorizontal: 24, paddingVertical: 6, borderRadius: 20 }}>
           <PlusIcon size={21} color={theme.NEUTRAL[400]} />
         </TouchableHighlight>
@@ -91,7 +178,7 @@ const HomeScreen = ({ navigation, route }) => {
               <Event
                 details={event}
                 key={key}
-                onPress={() => navigation.navigate("EventDetails", { event, calendars })}
+                onPress={() => navigation.navigate("EventDetails", { event, calendars, date: currentDate.toISOString() })}
               />
             ))}
           </View>

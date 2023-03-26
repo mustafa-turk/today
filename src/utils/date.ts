@@ -48,9 +48,9 @@ export const getDayPlusHours = (date: Date, hours: number) => {
   return today;
 }
 
-function addZero(i) {
-  if (i < 10) {
-    i = "0" + i;
+function addZero(number: number): string | number {
+  if (number < 10) {
+    return "0" + number;
   }
-  return i;
+  return number;
 }

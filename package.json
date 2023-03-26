@@ -29,6 +29,7 @@
     },
     "devDependencies": {
         "@babel/core": "^7.20.0",
+        "@types/lodash": "^4.14.191",
         "babel-plugin-module-resolver": "^5.0.0"
     },
     "private": true
