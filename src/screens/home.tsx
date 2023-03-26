@@ -1,21 +1,18 @@
 import { useEffect } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableHighlight,
-  ScrollView,
+  ScrollView, StyleSheet, Text, TouchableHighlight, View
 } from "react-native";
 
 import Event from "@/components/event";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
 
 import { useCalendar } from "@/hooks/use-calendar";
-import { getMonth, getDayDigits, getDay } from "@/utils/date";
+import theme from "@/styles/theme";
+import { getDay, getDayDigits, getMonth } from "@/utils/date";
 
-const HomeScreen = ({ navigation }) => {
-  const { currentDate, events, calendars, getEvents } = useCalendar();
-
+const HomeScreen = ({ navigation, route }) => {
+  const date = route?.params?.date || new Date()
+  const { currentDate, events, calendars, getEvents, defaultCalendarId } = useCalendar(date);
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getEvents(currentDate);
@@ -36,17 +33,14 @@ const HomeScreen = ({ navigation }) => {
     await getEvents(previousDate);
   };
 
+  const eventsLabel = `${events.length} ${events.length === 1 ? "event" : "events"}`;
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row" }}>
         <Text style={styles.title}>{getDay(currentDate)}, </Text>
-        <Text style={styles.date}>{`${getMonth(currentDate)} ${getDayDigits(
-          currentDate
-        )}`}</Text>
+        <Text style={styles.date}>{`${getMonth(currentDate)} ${getDayDigits(currentDate)}`}</Text>
       </View>
-      <Text style={{ ...styles.title, color: "#d4d4d4" }}>
-        {`${events.length} ${events.length === 1 ? "meeting" : "meetings"}`}
-      </Text>
 
       <View
         style={{
@@ -76,41 +70,34 @@ const HomeScreen = ({ navigation }) => {
         </TouchableHighlight>
       </View>
 
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 40 }}>
+        <Text style={{ color: "white", fontWeight: 600, fontSize: 18 }}>
+          {eventsLabel}
+        </Text>
+        <TouchableHighlight
+          onPress={() => navigation.navigate("EventDetails", { defaultCalendarId, date: currentDate, calendars, isEmpty: true })}
+          style={{ backgroundColor: theme.NEUTRAL[900], paddingHorizontal: 24, paddingVertical: 6, borderRadius: 20 }}>
+          <PlusIcon size={21} color={theme.NEUTRAL[400]} />
+        </TouchableHighlight>
+      </View>
+
       <View style={styles.eventsContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.eventsList}
         >
-          <View style={{ gap: 16, marginBottom: 48 }}>
+          <View>
             {events?.map((event, key) => (
               <Event
                 details={event}
                 key={key}
-                onPress={() =>
-                  navigation.navigate("EventDetails", { event, calendars })
-                }
+                onPress={() => navigation.navigate("EventDetails", { event, calendars })}
               />
             ))}
-            {events.length === 0 && (
-              <View>
-                <TouchableHighlight
-                  activeOpacity={0.7}
-                  style={{
-                    backgroundColor: "#e5e5e5",
-                    padding: 29,
-                    borderRadius: 20,
-                  }}
-                >
-                  <Text style={styles.buttonIcon}>
-                    <PlusIcon size={36} />
-                  </Text>
-                </TouchableHighlight>
-              </View>
-            )}
           </View>
         </ScrollView>
       </View>
-    </View>
+    </View >
   );
 };
 
@@ -141,13 +128,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     height: "72%",
-    backgroundColor: "white",
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
+    backgroundColor: theme.NEUTRAL[900],
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20
   },
   eventsList: {
-    paddingHorizontal: 16,
-    paddingVertical: 20,
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
   },

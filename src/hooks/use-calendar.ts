@@ -22,10 +22,16 @@ type Calendar = {
   id: string;
 };
 
-export const useCalendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+export const useCalendar = (date: Date) => {
+  const [currentDate, setCurrentDate] = useState(new Date(date));
   const [calendars, setCalendars] = useState<Calendar[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
+  const [defaultCalendarId, setDefaultCalendarId] = useState("");
+
+  const getDefaultCalendarId = async () => {
+    const defaultCalendar = await Calendar.getDefaultCalendarAsync();
+    setDefaultCalendarId(defaultCalendar.id);
+  }
 
   const getEvents = async (date: Date) => {
     setCurrentDate(date);
@@ -77,8 +83,9 @@ export const useCalendar = () => {
   useEffect(() => {
     (async () => {
       await getEvents(new Date());
+      await getDefaultCalendarId()
     })();
   }, []);
 
-  return { currentDate, events, calendars, getEvents };
+  return { currentDate, events, calendars, getEvents, defaultCalendarId };
 };

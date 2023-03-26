@@ -1,11 +1,13 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { shadeColor } from "@/utils/color";
+import theme from "@/styles/theme";
 
 const Event = ({ details, onPress }) => {
   const colors = {
-    default: details.color,
-    light: `${details.color}3D`,
-    dark: shadeColor(details.color, -50),
+    title: theme.NEUTRAL[300],
+    background: theme.NEUTRAL[800],
+    border: theme.NEUTRAL[700],
+    text: theme.NEUTRAL[300],
   };
 
   return (
@@ -13,20 +15,33 @@ const Event = ({ details, onPress }) => {
       activeOpacity={0.8}
       onPress={onPress}
       style={{
-        backgroundColor: colors.light,
-        padding: 20,
-        borderRadius: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: theme.NEUTRAL[800],
+        paddingHorizontal: 25,
+        paddingVertical: 25,
       }}
     >
-      <Text
-        style={{
-          color: colors.dark,
-          fontSize: 24,
-          fontWeight: "600",
-        }}
-      >
-        {details.title}
-      </Text>
+      <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: 24,
+            backgroundColor: shadeColor(details.color, -12),
+            marginTop: 7,
+            marginRight: 8,
+          }}
+        />
+        <Text
+          style={{
+            color: colors.title,
+            fontSize: 21,
+            fontWeight: "600",
+          }}
+        >
+          {details.title}
+        </Text>
+      </View>
 
       <View
         style={{
@@ -38,35 +53,36 @@ const Event = ({ details, onPress }) => {
         <View>
           <Text
             style={{
-              color: colors.dark,
-              fontWeight: "600",
-              fontSize: 21,
-            }}
-          >
-            {details.startTime}
-          </Text>
-          <Text
-            style={{
-              color: colors.dark,
+              color: colors.text,
               fontWeight: "600",
               fontSize: 16,
             }}
           >
             Start
           </Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontWeight: "500",
+              fontSize: 19,
+            }}
+          >
+            {details.startTime}
+          </Text>
         </View>
 
         <View
           style={{
-            backgroundColor: colors.light,
+            backgroundColor: theme.NEUTRAL[800],
             paddingHorizontal: 20,
             borderRadius: 40,
             justifyContent: "center",
+            alignItems: "flex-end",
           }}
         >
           <Text
             style={{
-              color: colors.dark,
+              color: theme.NEUTRAL[300],
               fontWeight: "600",
             }}
           >
@@ -77,24 +93,27 @@ const Event = ({ details, onPress }) => {
         <View>
           <Text
             style={{
-              color: colors.dark,
+              color: colors.text,
               fontWeight: "600",
-              fontSize: 21,
-            }}
-          >
-            {details.endTime}
-          </Text>
-          <Text
-            style={{
-              color: colors.dark,
               fontSize: 16,
             }}
           >
             End
           </Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontWeight: "500",
+              fontSize: 19,
+            }}
+          >
+            {details.endTime}
+          </Text>
         </View>
+
+
       </View>
-    </TouchableOpacity>
+    </TouchableOpacity >
   );
 };
 

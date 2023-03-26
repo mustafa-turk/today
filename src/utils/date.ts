@@ -42,6 +42,12 @@ export const timeBetweenDates = (
   return Math.round(difference / 60000);
 };
 
+export const getDayPlusHours = (date: Date, hours: number) => {
+  const today = new Date(date);
+  today.setHours(today.getHours() + hours);
+  return today;
+}
+
 function addZero(i) {
   if (i < 10) {
     i = "0" + i;

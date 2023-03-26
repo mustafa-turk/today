@@ -10,23 +10,44 @@ import * as Calendar from "expo-calendar";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+import { getDayPlusHours } from "@/utils/date";
 
 const EventDetails = ({ navigation, route }) => {
-  const { event, calendars } = route.params;
-  const [updatedEvent, setUpdatedEvent] = useState(event);
+  const { event, defaultCalendarId, date, calendars, isEmpty } = route.params;
+
+  const emptyEvent = {
+    "calendarId": defaultCalendarId,
+    "startDate": new Date(date),
+    "endDate": getDayPlusHours(date, 1),
+    "title": ""
+  };
+
+  const [updatedEvent, setUpdatedEvent] = useState(isEmpty ? emptyEvent : event);
+
+  const goBack = () => {
+    navigation.navigate('Home', { date });
+  }
 
   const onSave = async () => {
-    await Calendar.updateEventAsync(updatedEvent.id, {
-      title: updatedEvent.title,
-      startDate: updatedEvent.startDate,
-      endDate: updatedEvent.endDate,
-      calendarId: updatedEvent.calendarId,
-    });
-    navigation.goBack();
+    if (isEmpty) {
+      await Calendar.createEventAsync(updatedEvent.calendarId, {
+        title: updatedEvent.title,
+        startDate: updatedEvent.startDate,
+        endDate: updatedEvent.endDate,
+      });
+    } else {
+      await Calendar.updateEventAsync(updatedEvent.id, {
+        title: updatedEvent.title,
+        startDate: updatedEvent.startDate,
+        endDate: updatedEvent.endDate,
+        calendarId: updatedEvent.calendarId,
+      });
+    }
+    goBack();
   };
 
   const onCancel = () => {
-    navigation.goBack();
+    goBack();
   };
 
   const onTitleChange = (title: string) => {
@@ -68,7 +89,7 @@ const EventDetails = ({ navigation, route }) => {
         }}
       >
         <TouchableOpacity onPress={onCancel}>
-          <Text style={styles.cancel}>Close</Text>
+          <Text style={styles.cancel}>Cancel</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onSave}>
@@ -155,7 +176,7 @@ const EventDetails = ({ navigation, route }) => {
             themeVariant='dark'
             accentColor='white'
             textColor='white'
-            value={new Date(event.startDate)}
+            value={new Date(updatedEvent.startDate)}
             mode='time'
             onChange={onStartTimeChange}
           />
@@ -177,7 +198,7 @@ const EventDetails = ({ navigation, route }) => {
             themeVariant='dark'
             accentColor='white'
             textColor='white'
-            value={new Date(event.endDate)}
+            value={new Date(updatedEvent.endDate)}
             mode='time'
             onChange={onEndTimeChange}
           />
