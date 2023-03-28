@@ -1,7 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
 
-export const PlusIcon = (props) => <Feather name='plus' {...props} />;
-export const ArrowLeft = (props) => <Feather name='chevron-left' {...props} />;
-export const ArrowRight = (props) => (
-  <Feather name='chevron-right' {...props} />
-);
+type IconProps = {
+  color: string,
+  size: number
+}
+
+export const PlusIcon = (props: IconProps) => <Feather {...props} name='plus' />;
+export const ArrowLeft = (props: IconProps) => <Feather {...props} name='chevron-left' />;
+export const ArrowRight = (props: IconProps) => <Feather {...props} name='chevron-right' />;

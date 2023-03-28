@@ -1,4 +1,6 @@
-import { useState } from "react";
+
+import * as React from "react";
+import * as Calendar from "expo-calendar";
 import {
   View,
   Text,
@@ -6,27 +8,44 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import * as Calendar from "expo-calendar";
+
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { getDayPlusHours } from "@/utils/date";
 
-const EventDetails = ({ navigation, route }) => {
+import * as dateUtils from "@/utils/date";
+import theme from "@/styles/theme";
+
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { EventType, RootStackParamList } from "@/utils/types";
+
+type EventDetailsScreenRouteProp = RouteProp<RootStackParamList, 'EventDetails'>;
+
+type EventDetailsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'EventDetails'>;
+
+type Props = {
+  route: EventDetailsScreenRouteProp;
+  navigation: EventDetailsScreenNavigationProp;
+};
+
+const EventDetails: React.FC<Props> = ({ navigation, route }) => {
   const { event, defaultCalendarId, date, calendars, isEmpty } = route.params;
 
   const emptyEvent = {
-    "calendarId": defaultCalendarId,
-    "startDate": new Date(date),
-    "endDate": getDayPlusHours(date, 1),
-    "title": ""
+    calendarId: defaultCalendarId,
+    startDate: new Date(date),
+    endDate: dateUtils.getDayPlusHours(date, 1),
+    title: "",
   };
 
-  const [updatedEvent, setUpdatedEvent] = useState(isEmpty ? emptyEvent : event);
+  const [updatedEvent, setUpdatedEvent] = React.useState<EventType | Partial<EventType>>(
+    isEmpty ? emptyEvent : event
+  );
 
   const goBack = () => {
-    navigation.navigate('Home', { date });
-  }
+    navigation.navigate("Home", { date });
+  };
 
   const onSave = async () => {
     if (isEmpty) {
@@ -43,6 +62,11 @@ const EventDetails = ({ navigation, route }) => {
         calendarId: updatedEvent.calendarId,
       });
     }
+    goBack();
+  };
+
+  const onDelete = async () => {
+    await Calendar.deleteEventAsync(updatedEvent.id);
     goBack();
   };
 
@@ -115,62 +139,68 @@ const EventDetails = ({ navigation, route }) => {
         autoComplete='off'
       />
 
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 8,
-          marginTop: 20,
-          flexWrap: "wrap",
-        }}
-      >
-        {calendars.map((calendar, key) => (
-          <TouchableOpacity
-            key={key}
-            activeOpacity={0.8}
-            onPress={() => onCalendarPress(calendar.id)}
-            style={{
-              backgroundColor: "#262626",
-              padding: 12,
-              borderRadius: 8,
-              flexDirection: "row",
-              gap: 6,
-              borderWidth: 1,
-              borderColor:
-                calendar.id === updatedEvent.calendarId ? "#525252" : "#262626",
-            }}
-          >
-            <View
+      {isEmpty && (
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 8,
+            marginBottom: 20,
+            marginTop: 10,
+            flexWrap: "wrap",
+          }}
+        >
+          {calendars.map((calendar, key) => (
+            <TouchableOpacity
+              key={key}
+              activeOpacity={0.8}
+              onPress={() => onCalendarPress(calendar.id)}
               style={{
-                backgroundColor: calendar.color,
-                width: 20,
-                height: 20,
-                borderRadius: 6,
-              }}
-            />
-            <Text
-              style={{
-                color: "white",
-                fontSize: 16,
+                backgroundColor: "#262626",
+                padding: 12,
+                borderRadius: 8,
+                flexDirection: "row",
+                gap: 6,
+                borderWidth: 1,
+                borderColor:
+                  calendar.id === updatedEvent.calendarId
+                    ? "#525252"
+                    : "#262626",
               }}
             >
-              {calendar.title}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+              <View
+                style={{
+                  backgroundColor: calendar.color,
+                  width: 20,
+                  height: 20,
+                  borderRadius: 6,
+                }}
+              />
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                }}
+              >
+                {calendar.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
-      <View style={{ marginTop: 20, gap: 10 }}>
+      <View style={{ marginTop: 10, gap: 10 }}>
         <View
           style={{
             backgroundColor: "#262626",
             borderRadius: 10,
-            padding: 16,
+            paddingHorizontal: 16,
+            paddingVertical: 10,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "white", fontSize: 18 }}>Starts at</Text>
+          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>Starts at</Text>
           <DateTimePicker
             locale={"en_GB"}
             themeVariant='dark'
@@ -186,13 +216,14 @@ const EventDetails = ({ navigation, route }) => {
           style={{
             backgroundColor: "#262626",
             borderRadius: 10,
-            padding: 16,
+            paddingHorizontal: 16,
+            paddingVertical: 10,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "white", fontSize: 18 }}>Ends at</Text>
+          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>Ends at</Text>
           <DateTimePicker
             locale={"en_GB"}
             themeVariant='dark'
@@ -204,6 +235,16 @@ const EventDetails = ({ navigation, route }) => {
           />
         </View>
       </View>
+
+      {!isEmpty && (
+        <TouchableOpacity onPress={onDelete}>
+          <Text
+            style={{ ...styles.cancel, textAlign: "center", marginTop: 30 }}
+          >
+            Delete Event
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

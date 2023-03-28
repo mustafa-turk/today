@@ -1,114 +1,114 @@
 import * as React from "react";
-import {
-  ScrollView, StyleSheet, Text, TouchableHighlight, View
-} from "react-native";
 import * as Calendar from "expo-calendar";
 
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
 import Event from "@/components/event";
+import Button from "@/components/button";
+import Screen from "@/components/screen";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
 
 import theme from "@/styles/theme";
-import { getDay, getDayDigits, getMonth } from "@/utils/date";
+import * as dateUtils from "@/utils/date";
+import { flatten, find, isEmpty } from "lodash";
 
-import { flatten, find } from "lodash";
+import { CalendarType, EventType, RootStackParamList } from "@/utils/types"
 
-import {
-  getStartAndEndOfDay,
-  timeBetweenDates,
-  getTimeFromString,
-} from "@/utils/date";
-import { useFocusEffect } from "@react-navigation/native";
+type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
-type Calendar = {
-  color: string;
-  title: string;
-  id: string;
+type HomeScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Home'
+>;
+
+type Props = {
+  route: HomeScreenRouteProp;
+  navigation: HomeScreenNavigationProp;
 };
 
-type Event = {
-  color: string;
-  title: string;
-  startTime: string;
-  endTime: string;
-  duration: number;
-};
+const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
+  const [calendars, setCalendars] = React.useState<CalendarType[]>([]);
+  const [events, setEvents] = React.useState<EventType[]>([]);
 
-const HomeScreen = ({ navigation, route }) => {
   const [currentDate, setCurrentDate] = React.useState(new Date());
+  const [currentCalendarId, setCurrentCalendarId] = React.useState('all');
   const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
-  const [calendars, setCalendars] = React.useState<Calendar[]>([]);
-  const [events, setEvents] = React.useState<Event[]>([]);
 
   const getDefaultCalendarId = async () => {
     const defaultCalendar = await Calendar.getDefaultCalendarAsync();
     setDefaultCalendarId(defaultCalendar.id);
-  }
+  };
 
   const setNextDay = async () => {
     const nextDate = new Date(currentDate);
     nextDate.setDate(nextDate.getDate() + 1);
 
     setCurrentDate(nextDate);
-  }
+  };
 
   const setPreviousDay = async () => {
     const prevDate = new Date(currentDate);
     prevDate.setDate(prevDate.getDate() - 1);
 
     setCurrentDate(prevDate);
-  }
+  };
 
   const getEvents = async () => {
-    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    const cals = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
 
-    if (status === "granted") {
-      const cals = await Calendar.getCalendarsAsync(
-        Calendar.EntityTypes.EVENT
-      );
+    const events = cals.map((cal) =>
+      Calendar.getEventsAsync(
+        [cal.id],
+        dateUtils.getStartAndEndOfDay(currentDate).start,
+        dateUtils.getStartAndEndOfDay(currentDate).end
+      )
+    );
 
-      const events = cals.map((cal) =>
-        Calendar.getEventsAsync(
-          [cal.id],
-          getStartAndEndOfDay(currentDate).start,
-          getStartAndEndOfDay(currentDate).end
+    const eventsFromCalendars = await Promise.all(events);
+
+    setEvents(
+      flatten(eventsFromCalendars)
+        .sort(
+          (a: Calendar.Event, b: Calendar.Event) =>
+            new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
         )
-      );
+        .filter((event: Calendar.Event) => currentCalendarId === "all" || currentCalendarId === event.calendarId)
+        .map((event: Calendar.Event) => ({
+          id: event.id,
+          calendarId: event.calendarId,
+          color: find(cals, { id: event.calendarId }).color,
+          title: event.title,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          duration: dateUtils.timeBetweenDates(event.startDate, event.endDate),
+          startTime: dateUtils.getTimeFromString(event.startDate),
+          endTime: dateUtils.getTimeFromString(event.endDate),
+        }))
+    );
 
-      const eventsFromCalendars = await Promise.all(events);
-
-      setEvents(
-        flatten(eventsFromCalendars)
-          .sort(
-            (a: Calendar.Event, b: Calendar.Event) =>
-              new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
-          )
-          .map((event: Calendar.Event) => ({
-            id: event.id,
-            calendarId: event.calendarId,
-            color: find(cals, { id: event.calendarId }).color,
-            title: event.title,
-            startDate: event.startDate,
-            endDate: event.endDate,
-            duration: timeBetweenDates(event.startDate, event.endDate),
-            startTime: getTimeFromString(event.startDate),
-            endTime: getTimeFromString(event.endDate),
-          }))
-      );
-
-      setCalendars(
-        cals.map((calendar) => ({
+    setCalendars(
+      cals
+        .filter((calendar) => calendar.allowsModifications)
+        .map((calendar) => ({
           title: calendar.title,
           color: calendar.color,
           id: calendar.id,
         }))
-      );
-    }
+    );
   };
 
   useFocusEffect(
     React.useCallback(() => {
       if (route.params?.date) {
-        setCurrentDate(new Date(route.params?.date))
+        setCurrentDate(new Date(route.params?.date));
       }
     }, [route.params?.date])
   );
@@ -116,113 +116,245 @@ const HomeScreen = ({ navigation, route }) => {
   React.useEffect(() => {
     (async () => {
       await getDefaultCalendarId();
+    })();
+  }, [])
+
+  React.useEffect(() => {
+    (async () => {
       await getEvents();
     })();
-  }, [currentDate]);
+  }, [currentDate, currentCalendarId]);
 
   const eventsLabel = `${events.length} ${events.length === 1 ? "event" : "events"}`;
 
   return (
-    <View style={styles.container}>
-      <View style={{ flexDirection: "row" }}>
-        <Text style={styles.title}>{getDay(currentDate)}, </Text>
-        <Text style={styles.date}>{`${getMonth(currentDate)} ${getDayDigits(currentDate)}`}</Text>
+    <Screen>
+      <View
+        style={{
+          ...styles.horizontalSafeAreaPadding,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Button style={styles.button} onPress={setPreviousDay}>
+          <ArrowLeft size={24} color={theme.NEUTRAL[400]} />
+        </Button>
+
+        <View style={{ justifyContent: "center" }}>
+          <Text style={styles.title}>{dateUtils.getDay(currentDate)}</Text>
+          <Text style={styles.date}>{`${dateUtils.getDayDigits(currentDate)} ${dateUtils.getMonth(currentDate)}`}</Text>
+        </View>
+
+        <Button style={styles.button} onPress={setNextDay}>
+          <ArrowRight size={24} color={theme.NEUTRAL[400]} />
+        </Button>
       </View>
 
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          gap: 10,
+          marginTop: 40,
         }}
       >
-        <TouchableHighlight
-          activeOpacity={0.7}
-          style={styles.button}
-          onPress={setPreviousDay}
-        >
-          <Text style={styles.buttonIcon}>
-            <ArrowLeft size={24} />
-          </Text>
-        </TouchableHighlight>
-
-        <TouchableHighlight
-          activeOpacity={0.7}
-          style={styles.button}
-          onPress={setNextDay}
-        >
-          <Text style={styles.buttonIcon}>
-            <ArrowRight size={24} />
-          </Text>
-        </TouchableHighlight>
-      </View>
-
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 40 }}>
-        <Text style={{ color: "white", fontWeight: 600, fontSize: 18 }}>
-          {eventsLabel}
+        <Text style={{ color: "white", fontWeight: "600", fontSize: 18, ...styles.horizontalSafeAreaPadding }}>
+          Calendars
         </Text>
-        <TouchableHighlight
-          onPress={() => navigation.navigate("EventDetails", { defaultCalendarId, date: currentDate.toISOString(), calendars, isEmpty: true })}
-          style={{ backgroundColor: theme.NEUTRAL[900], paddingHorizontal: 24, paddingVertical: 6, borderRadius: 20 }}>
-          <PlusIcon size={21} color={theme.NEUTRAL[400]} />
-        </TouchableHighlight>
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          style={{
+            marginTop: 10,
+          }}
+        >
+          <Button
+            onPress={() => setCurrentCalendarId('all')}
+            style={{
+              backgroundColor: currentCalendarId === "all" ? theme.NEUTRAL[100] : theme.NEUTRAL[800],
+              padding: 12,
+              paddingHorizontal: 20,
+              borderRadius: 8,
+              flexDirection: "row",
+              marginRight: 10,
+              gap: 8,
+              borderWidth: 1,
+              borderColor: theme.NEUTRAL[800],
+              marginLeft: 20
+            }}
+          >
+            <>
+              <Text
+                style={{
+                  color: currentCalendarId === "all" ? theme.NEUTRAL[900] : "white",
+                  fontSize: 16,
+                }}
+              >
+                All
+              </Text>
+            </>
+          </Button>
+          {calendars.map((calendar, key) => (
+            <Button
+              key={key}
+              onPress={() => setCurrentCalendarId(calendar.id)}
+              style={{
+                backgroundColor: currentCalendarId === calendar.id ? theme.NEUTRAL[100] : theme.NEUTRAL[800],
+                padding: 12,
+                borderRadius: 8,
+                flexDirection: "row",
+                marginRight: 10,
+                gap: 8,
+                borderWidth: 1,
+                borderColor:
+                  calendar.id === currentCalendarId
+                    ? "#525252"
+                    : theme.NEUTRAL[800],
+              }}
+            >
+              <>
+                <View
+                  style={{
+                    backgroundColor: calendar.color,
+                    width: 20,
+                    height: 20,
+                    borderRadius: 6,
+                  }}
+                />
+                <Text
+                  style={{
+                    color: currentCalendarId === calendar.id ? theme.NEUTRAL[900] : "white",
+                    fontSize: 16,
+                  }}
+                >
+                  {calendar.title}
+                </Text>
+              </>
+            </Button>
+          ))}
+          <Button
+            onPress={() => setCurrentCalendarId('all')}
+            style={{
+              backgroundColor: "black",
+              padding: 12,
+              paddingHorizontal: 20,
+              borderRadius: 8,
+              flexDirection: "row",
+              marginRight: 20,
+              gap: 8,
+              borderWidth: 1,
+              borderStyle: 'dotted',
+              borderColor: theme.NEUTRAL[600]
+            }}
+          >
+            <PlusIcon size={18} color={theme.NEUTRAL[300]} />
+            <Text
+              style={{
+                color: "white",
+                fontSize: 16,
+              }}
+            >
+              New Calendar
+            </Text>
+          </Button>
+        </ScrollView>
       </View>
 
       <View style={styles.eventsContainer}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={styles.eventsList}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 25,
+            paddingVertical: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: theme.NEUTRAL[800]
+          }}
         >
-          <View>
-            {events?.map((event, key) => (
-              <Event
-                details={event}
-                key={key}
-                onPress={() => navigation.navigate("EventDetails", { event, calendars, date: currentDate.toISOString() })}
-              />
-            ))}
-          </View>
-        </ScrollView>
+          <Text style={{ color: "white", fontWeight: "600", fontSize: 18 }}>
+            {eventsLabel}
+          </Text>
+          <Button
+            onPress={() =>
+              navigation.navigate("EventDetails", {
+                calendars,
+                defaultCalendarId: currentCalendarId === "all" ? defaultCalendarId : currentCalendarId,
+                date: currentDate.toISOString(),
+                isEmpty: true,
+              })
+            }
+            style={{
+              backgroundColor: theme.NEUTRAL[100],
+              paddingHorizontal: 24,
+              paddingVertical: 6,
+              borderRadius: 20,
+            }}
+          >
+            <PlusIcon size={21} color={theme.NEUTRAL[900]} />
+          </Button>
+        </View>
+        {isEmpty(events) ? (
+          <Text
+            style={{
+              color: theme.NEUTRAL[400],
+              textAlign: "center",
+              marginTop: 40,
+              fontSize: 16,
+            }}
+          >
+            Looks like a chill day, no events
+          </Text>
+        ) : (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={styles.eventsList}
+          >
+            <View>
+              {events?.map((event, index) => (
+                <Event
+                  details={event}
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate("EventDetails", {
+                      event,
+                      calendars,
+                      date: currentDate.toISOString(),
+                    })
+                  }
+                />
+              ))}
+            </View>
+          </ScrollView>
+        )}
       </View>
-    </View >
+    </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "black",
-    paddingTop: 80,
-    paddingHorizontal: 20,
-  },
-  title: { color: "#d4d4d4", fontWeight: "bold", fontSize: 32 },
-  date: { color: "#737373", fontWeight: "bold", fontSize: 32 },
+  title: { color: theme.NEUTRAL[200], fontWeight: "bold", fontSize: 30, textAlign: "center" },
+  date: { color: theme.NEUTRAL[400], fontWeight: "bold", fontSize: 21, textAlign: "center" },
   button: {
-    backgroundColor: "#171717",
-    borderRadius: 20,
-    marginTop: 20,
-    flex: 1,
-  },
-  buttonIcon: {
-    color: "#525252",
-    textAlign: "center",
-    padding: 20,
-    fontSize: 30,
+    paddingVertical: 14,
+    paddingHorizontal: 18
   },
   eventsContainer: {
     position: "absolute",
     left: 0,
     bottom: 0,
     right: 0,
-    height: "72%",
-    backgroundColor: theme.NEUTRAL[900],
+    height: "70%",
+    backgroundColor: theme.NEUTRAL[950],
     borderTopLeftRadius: 20,
-    borderTopRightRadius: 20
+    borderTopRightRadius: 20,
   },
   eventsList: {
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
+    marginBottom: 30
   },
+  horizontalSafeAreaPadding: {
+    paddingHorizontal: 20
+  }
 });
 
 export default HomeScreen;

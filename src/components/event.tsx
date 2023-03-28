@@ -4,10 +4,10 @@ import theme from "@/styles/theme";
 
 const Event = ({ details, onPress }) => {
   const colors = {
-    title: theme.NEUTRAL[300],
-    background: theme.NEUTRAL[800],
-    border: theme.NEUTRAL[700],
+    title: theme.NEUTRAL[100],
     text: theme.NEUTRAL[300],
+    subText: theme.NEUTRAL[400],
+    border: theme.NEUTRAL[800],
   };
 
   return (
@@ -16,9 +16,10 @@ const Event = ({ details, onPress }) => {
       onPress={onPress}
       style={{
         borderBottomWidth: 1,
-        borderBottomColor: theme.NEUTRAL[800],
+        borderBottomColor: colors.border,
         paddingHorizontal: 25,
         paddingVertical: 25,
+        paddingTop: 25
       }}
     >
       <View style={{ flexDirection: "row" }}>
@@ -53,7 +54,7 @@ const Event = ({ details, onPress }) => {
         <View>
           <Text
             style={{
-              color: colors.text,
+              color: colors.subText,
               fontWeight: "600",
               fontSize: 16,
             }}
@@ -71,29 +72,10 @@ const Event = ({ details, onPress }) => {
           </Text>
         </View>
 
-        <View
-          style={{
-            backgroundColor: theme.NEUTRAL[800],
-            paddingHorizontal: 20,
-            borderRadius: 40,
-            justifyContent: "center",
-            alignItems: "flex-end",
-          }}
-        >
-          <Text
-            style={{
-              color: theme.NEUTRAL[300],
-              fontWeight: "600",
-            }}
-          >
-            {details.duration} mins
-          </Text>
-        </View>
-
         <View>
           <Text
             style={{
-              color: colors.text,
+              color: colors.subText,
               fontWeight: "600",
               fontSize: 16,
             }}
@@ -111,9 +93,27 @@ const Event = ({ details, onPress }) => {
           </Text>
         </View>
 
-
+        <View
+          style={{
+            backgroundColor: theme.NEUTRAL[800],
+            paddingHorizontal: 20,
+            borderRadius: 40,
+            justifyContent: "center",
+            alignItems: "flex-end",
+            opacity: 0.5
+          }}
+        >
+          <Text
+            style={{
+              color: theme.NEUTRAL[100],
+              fontWeight: "600",
+            }}
+          >
+            {details.duration} mins
+          </Text>
+        </View>
       </View>
-    </TouchableOpacity >
+    </TouchableOpacity>
   );
 };
 

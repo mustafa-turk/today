@@ -1,22 +1,37 @@
-import "react-native-gesture-handler";
+import * as React from 'react';
+import * as Calendar from "expo-calendar";
 
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 
 import HomeScreen from "@/screens/home";
 import EventDetails from "@/screens/event-details";
-import { CardStyleInterpolators } from "@react-navigation/stack";
+import GrantAccessScreen from "@/screens/grant-access";
 
-const Stack = createStackNavigator();
+import { RootStackParamList } from "@/utils/types"
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
+  const [isAccessGranted, setAccessGranted] = React.useState(false);
+
+  React.useEffect(() => {
+    const init = async () => {
+      const { status } = await Calendar.requestCalendarPermissionsAsync();
+
+      setAccessGranted(status === "granted");
+    }
+
+    init();
+  }, [])
+
   return (
     <>
       <StatusBar style='light' />
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name='Home' component={HomeScreen} />
+          {isAccessGranted ? <Stack.Screen name='Home' component={HomeScreen} /> : <Stack.Screen name='GrantAccess' component={GrantAccessScreen} />}
           <Stack.Screen
             name='EventDetails'
             component={EventDetails}
