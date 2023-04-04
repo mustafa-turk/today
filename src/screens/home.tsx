@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as Calendar from "expo-calendar";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -15,7 +14,7 @@ import Event from "@/components/event";
 import Button from "@/components/button";
 import Screen from "@/components/screen";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
-import { flatten, find, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 
 import * as date from "@/utils/date";
 import * as calendar from "@/utils/calendar";
@@ -43,20 +42,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [currentCalendarId, setCurrentCalendarId] = React.useState('all');
   const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
-
-  const setNextDay = async () => {
-    const nextDate = new Date(currentDate);
-    nextDate.setDate(nextDate.getDate() + 1);
-
-    setCurrentDate(nextDate);
-  };
-
-  const setPreviousDay = async () => {
-    const prevDate = new Date(currentDate);
-    prevDate.setDate(prevDate.getDate() - 1);
-
-    setCurrentDate(prevDate);
-  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -104,7 +89,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           alignItems: "center",
         }}
       >
-        <Button style={styles.button} onPress={setPreviousDay}>
+        <Button style={styles.button} onPress={() => setCurrentDate(date.getPreviousDay(currentDate))}>
           <ArrowLeft size={24} color={theme.NEUTRAL[400]} />
         </Button>
 
@@ -113,7 +98,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <Text style={styles.date}>{`${date.getDayDigits(currentDate)} ${date.getMonth(currentDate)}`}</Text>
         </View>
 
-        <Button style={styles.button} onPress={setNextDay}>
+        <Button style={styles.button} onPress={() => setCurrentDate(date.getNextDay(currentDate))}>
           <ArrowRight size={24} color={theme.NEUTRAL[400]} />
         </Button>
       </View>

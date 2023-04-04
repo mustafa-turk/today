@@ -54,3 +54,17 @@ function addZero(number: number): string | number {
   }
   return number;
 }
+
+export const getNextDay = (date: Date) => {
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + 1);
+
+  return nextDate;
+}
+
+export const getPreviousDay = (date: Date) => {
+  const previousDay = new Date(date);
+  previousDay.setDate(previousDay.getDate() - 1);
+
+  return previousDay;
+}
