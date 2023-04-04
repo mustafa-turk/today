@@ -1,7 +1,8 @@
 export type RootStackParamList = {
   Home: { date: Date } | undefined,
   GrantAccess: undefined,
-  EventDetails: { defaultCalendarId: string, event: EventType, date: Date, calendars: CalendarType[], isEmpty: boolean }
+  EventDetails: { defaultCalendarId: string, event: EventType, date: Date, calendars: CalendarType[], isEmpty: boolean },
+  NewCalendar: undefined
 };
 
 export type CalendarType = {

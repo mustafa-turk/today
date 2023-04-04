@@ -7,6 +7,7 @@ import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/
 
 import HomeScreen from "@/screens/home";
 import EventDetails from "@/screens/event-details";
+import NewCalendar from "@/screens/new-calendar";
 import GrantAccessScreen from "@/screens/grant-access";
 
 import { RootStackParamList } from "@/utils/types"
@@ -35,6 +36,14 @@ export default function App() {
           <Stack.Screen
             name='EventDetails'
             component={EventDetails}
+            options={{
+              cardStyleInterpolator:
+                CardStyleInterpolators.forModalPresentationIOS,
+            }}
+          />
+          <Stack.Screen
+            name='NewCalendar'
+            component={NewCalendar}
             options={{
               cardStyleInterpolator:
                 CardStyleInterpolators.forModalPresentationIOS,

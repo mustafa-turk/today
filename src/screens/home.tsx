@@ -15,10 +15,12 @@ import Event from "@/components/event";
 import Button from "@/components/button";
 import Screen from "@/components/screen";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
+import { flatten, find, isEmpty } from "lodash";
+
+import * as date from "@/utils/date";
+import * as calendar from "@/utils/calendar";
 
 import theme from "@/styles/theme";
-import * as dateUtils from "@/utils/date";
-import { flatten, find, isEmpty } from "lodash";
 
 import { CalendarType, EventType, RootStackParamList } from "@/utils/types"
 
@@ -42,11 +44,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [currentCalendarId, setCurrentCalendarId] = React.useState('all');
   const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
 
-  const getDefaultCalendarId = async () => {
-    const defaultCalendar = await Calendar.getDefaultCalendarAsync();
-    setDefaultCalendarId(defaultCalendar.id);
-  };
-
   const setNextDay = async () => {
     const nextDate = new Date(currentDate);
     nextDate.setDate(nextDate.getDate() + 1);
@@ -61,50 +58,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     setCurrentDate(prevDate);
   };
 
-  const getEvents = async () => {
-    const cals = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
-
-    const events = cals.map((cal) =>
-      Calendar.getEventsAsync(
-        [cal.id],
-        dateUtils.getStartAndEndOfDay(currentDate).start,
-        dateUtils.getStartAndEndOfDay(currentDate).end
-      )
-    );
-
-    const eventsFromCalendars = await Promise.all(events);
-
-    setEvents(
-      flatten(eventsFromCalendars)
-        .sort(
-          (a: Calendar.Event, b: Calendar.Event) =>
-            new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
-        )
-        .filter((event: Calendar.Event) => currentCalendarId === "all" || currentCalendarId === event.calendarId)
-        .map((event: Calendar.Event) => ({
-          id: event.id,
-          calendarId: event.calendarId,
-          color: find(cals, { id: event.calendarId }).color,
-          title: event.title,
-          startDate: event.startDate,
-          endDate: event.endDate,
-          duration: dateUtils.timeBetweenDates(event.startDate, event.endDate),
-          startTime: dateUtils.getTimeFromString(event.startDate),
-          endTime: dateUtils.getTimeFromString(event.endDate),
-        }))
-    );
-
-    setCalendars(
-      cals
-        .filter((calendar) => calendar.allowsModifications)
-        .map((calendar) => ({
-          title: calendar.title,
-          color: calendar.color,
-          id: calendar.id,
-        }))
-    );
-  };
-
   useFocusEffect(
     React.useCallback(() => {
       if (route.params?.date) {
@@ -113,15 +66,29 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     }, [route.params?.date])
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      (async () => {
+        const cals = await calendar.getCalendars();
+        setCalendars(cals);
+      })();
+    }, [])
+  );
+
   React.useEffect(() => {
     (async () => {
-      await getDefaultCalendarId();
+      const id = await calendar.getDefaultCalendarId();
+      setDefaultCalendarId(id)
     })();
   }, [])
 
   React.useEffect(() => {
     (async () => {
-      await getEvents();
+      const cals = await calendar.getCalendars();
+      const evs = await calendar.getEvents(cals, currentDate, currentCalendarId);
+
+      setCalendars(cals);
+      setEvents(evs);
     })();
   }, [currentDate, currentCalendarId]);
 
@@ -142,8 +109,8 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         </Button>
 
         <View style={{ justifyContent: "center" }}>
-          <Text style={styles.title}>{dateUtils.getDay(currentDate)}</Text>
-          <Text style={styles.date}>{`${dateUtils.getDayDigits(currentDate)} ${dateUtils.getMonth(currentDate)}`}</Text>
+          <Text style={styles.title}>{date.getDay(currentDate)}</Text>
+          <Text style={styles.date}>{`${date.getDayDigits(currentDate)} ${date.getMonth(currentDate)}`}</Text>
         </View>
 
         <Button style={styles.button} onPress={setNextDay}>
@@ -231,7 +198,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             </Button>
           ))}
           <Button
-            onPress={() => setCurrentCalendarId('all')}
+            onPress={() => navigation.navigate('NewCalendar')}
             style={{
               backgroundColor: "black",
               padding: 12,
