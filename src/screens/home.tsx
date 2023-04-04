@@ -22,6 +22,7 @@ import * as calendar from "@/utils/calendar";
 import theme from "@/styles/theme";
 
 import { CalendarType, EventType, RootStackParamList } from "@/utils/types"
+import useNotifications from "@/hooks/use-notifications";
 
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
