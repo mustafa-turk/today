@@ -32,6 +32,7 @@ export const getEvents = async (cals, currentDate: Date, currentCalendarId: stri
     .filter((event: Calendar.Event) => currentCalendarId === "all" || currentCalendarId === event.calendarId)
     .map((event: Calendar.Event) => ({
       id: event.id,
+      notes: event.notes,
       calendarId: event.calendarId,
       calendarTitle: find(cals, { id: event.calendarId }).title,
       color: find(cals, { id: event.calendarId }).color,

@@ -6,12 +6,13 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
 } from "react-native";
 
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+
+import TextInput from "@/components/text-input";
 
 import * as dateUtils from "@/utils/date";
 import theme from "@/styles/theme";
@@ -53,6 +54,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         title: updatedEvent.title,
         startDate: updatedEvent.startDate,
         endDate: updatedEvent.endDate,
+        notes: updatedEvent.notes,
       });
     } else {
       await Calendar.updateEventAsync(updatedEvent.id, {
@@ -60,9 +62,9 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         startDate: updatedEvent.startDate,
         endDate: updatedEvent.endDate,
         calendarId: updatedEvent.calendarId,
+        notes: updatedEvent.notes,
       });
     }
-    scheduleNotification(updatedEvent.title, "Starts in 5 minutes!");
     goBack();
   };
 
@@ -77,6 +79,10 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
 
   const onTitleChange = (title: string) => {
     setUpdatedEvent({ ...updatedEvent, title });
+  };
+
+  const onNotesChange = (notes: string) => {
+    setUpdatedEvent({ ...updatedEvent, notes });
   };
 
   const onStartTimeChange = (event: DateTimePickerEvent, date: Date) => {
@@ -122,72 +128,67 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         </TouchableOpacity>
       </View>
 
-      <TextInput
-        style={{
-          borderRadius: 10,
-          padding: 16,
-          backgroundColor: theme.GRAY[300],
-          fontSize: 18,
-          color: "white",
-        }}
-        placeholder='Event title'
-        placeholderTextColor='#d4d4d4'
-        onChangeText={onTitleChange}
-        value={updatedEvent.title}
-        autoCorrect={false}
-        keyboardAppearance='dark'
-        autoCapitalize='none'
-        autoComplete='off'
-      />
+      <View style={{ gap: 10, marginBottom: 30 }}>
 
-      {isEmpty && (
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 8,
-            marginBottom: 20,
-            marginTop: 10,
-            flexWrap: "wrap",
-          }}
-        >
-          {calendars.map((calendar, key) => (
-            <TouchableOpacity
-              key={key}
-              activeOpacity={0.8}
-              onPress={() => onCalendarPress(calendar.id)}
-              style={{
-                backgroundColor: theme.GRAY[300],
-                padding: 12,
-                borderRadius: 8,
-                flexDirection: "row",
-                gap: 6,
-                borderWidth: 1,
-                borderColor:
-                  calendar.id === updatedEvent.calendarId
-                    ? theme.GRAY[100]
-                    : theme.GRAY[300],
-              }}
-            >
-              <View
+        <TextInput
+          placeholder='Event Title'
+          onChangeText={onTitleChange}
+          value={updatedEvent.title}
+        />
+
+        <TextInput
+          placeholder='Event Notes'
+          onChangeText={onNotesChange}
+          value={updatedEvent.notes}
+        />
+
+        {isEmpty && (
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 8,
+              flexWrap: "wrap",
+            }}
+          >
+            {calendars.map((calendar, key) => (
+              <TouchableOpacity
+                key={key}
+                activeOpacity={0.8}
+                onPress={() => onCalendarPress(calendar.id)}
                 style={{
-                  backgroundColor: calendar.color,
-                  width: 20,
-                  height: 20,
-                  borderRadius: 6,
-                }}
-              />
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 16,
+                  backgroundColor: theme.GRAY[300],
+                  padding: 12,
+                  borderRadius: 8,
+                  flexDirection: "row",
+                  gap: 6,
+                  borderWidth: 1,
+                  borderColor:
+                    calendar.id === updatedEvent.calendarId
+                      ? theme.GRAY[100]
+                      : theme.GRAY[300],
                 }}
               >
-                {calendar.title}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+                <View
+                  style={{
+                    backgroundColor: calendar.color,
+                    width: 20,
+                    height: 20,
+                    borderRadius: 6,
+                  }}
+                />
+                <Text
+                  style={{
+                    color: "white",
+                    fontSize: 16,
+                  }}
+                >
+                  {calendar.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
 
       <View style={{ marginTop: 10, gap: 10 }}>
         <View

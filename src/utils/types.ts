@@ -21,4 +21,5 @@ export type EventType = {
   calendarId: string;
   startDate: Date | string;
   endDate: Date | string;
+  notes: string
 };

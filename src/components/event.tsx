@@ -33,7 +33,7 @@ const Event = ({ details, onPress }) => {
           {details.calendarTitle}
         </Text>
       </View>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ gap: 0 }}>
         <Text
           style={{
             color: colors.title,
@@ -42,6 +42,15 @@ const Event = ({ details, onPress }) => {
           }}
         >
           {details.title}
+        </Text>
+        <Text
+          style={{
+            color: theme.NEUTRAL[400],
+            fontSize: 19,
+            fontWeight: "500",
+          }}
+        >
+          {details.notes}
         </Text>
       </View>
 

@@ -1,9 +1,28 @@
-import { TextInput } from "react-native";
+import { TextInput } from 'react-native';
 
-const Input = () => {
+import theme from '@/styles/theme';
+
+function CustomTextInput({ placeholder, value, onChangeText, ...props }) {
   return (
-    <TextInput />
-  )
+    <TextInput
+      style={{
+        borderRadius: 10,
+        padding: 16,
+        backgroundColor: theme.GRAY[300],
+        fontSize: 18,
+        color: "white",
+      }}
+      placeholder={placeholder}
+      placeholderTextColor="#d4d4d4"
+      onChangeText={onChangeText}
+      value={value}
+      autoCorrect={false}
+      keyboardAppearance="dark"
+      autoCapitalize="none"
+      autoComplete="off"
+      {...props}
+    />
+  );
 }
 
-export default Input;
+export default CustomTextInput;
