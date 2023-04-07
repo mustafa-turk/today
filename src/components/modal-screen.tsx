@@ -1,4 +1,5 @@
 
+import theme from "@/styles/theme";
 import * as React from "react";
 import {
   View,
@@ -68,7 +69,7 @@ const ModalScreen: React.FC<Props> = ({ children, navigation, isEmpty, onSave })
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#171717",
+    backgroundColor: theme.GRAY[400],
     padding: 20,
   },
   cancel: {

@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { shadeColor } from "@/utils/color";
+
 import theme from "@/styles/theme";
 
 const Event = ({ details, onPress }) => {
@@ -17,22 +17,23 @@ const Event = ({ details, onPress }) => {
       style={{
         borderBottomWidth: 1,
         borderBottomColor: colors.border,
-        paddingHorizontal: 25,
-        paddingVertical: 25,
-        paddingTop: 25
+        padding: 20,
+        paddingHorizontal: 25
       }}
     >
-      <View style={{ flexDirection: "row" }}>
-        <View
+      <View style={{ flexDirection: "row", alignItems: 'center', gap: 6, marginBottom: 10 }}>
+        <View style={{ backgroundColor: details.color, width: 15, height: 15, borderRadius: 10 }} />
+        <Text
           style={{
-            width: 12,
-            height: 12,
-            borderRadius: 24,
-            backgroundColor: shadeColor(details.color, -12),
-            marginTop: 7,
-            marginRight: 8,
+            color: colors.subText,
+            fontSize: 16,
+            fontWeight: "600",
           }}
-        />
+        >
+          {details.calendarTitle}
+        </Text>
+      </View>
+      <View style={{ flexDirection: "row" }}>
         <Text
           style={{
             color: colors.title,
@@ -46,9 +47,9 @@ const Event = ({ details, onPress }) => {
 
       <View
         style={{
-          marginTop: 20,
+          marginTop: 10,
           flexDirection: "row",
-          justifyContent: "space-between",
+          gap: 30
         }}
       >
         <View>
@@ -56,7 +57,7 @@ const Event = ({ details, onPress }) => {
             style={{
               color: colors.subText,
               fontWeight: "600",
-              fontSize: 16,
+              fontSize: 14,
             }}
           >
             Start
@@ -65,7 +66,7 @@ const Event = ({ details, onPress }) => {
             style={{
               color: colors.text,
               fontWeight: "500",
-              fontSize: 19,
+              fontSize: 16,
             }}
           >
             {details.startTime}
@@ -77,7 +78,7 @@ const Event = ({ details, onPress }) => {
             style={{
               color: colors.subText,
               fontWeight: "600",
-              fontSize: 16,
+              fontSize: 14,
             }}
           >
             End
@@ -86,30 +87,10 @@ const Event = ({ details, onPress }) => {
             style={{
               color: colors.text,
               fontWeight: "500",
-              fontSize: 19,
+              fontSize: 16,
             }}
           >
             {details.endTime}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            backgroundColor: theme.NEUTRAL[800],
-            paddingHorizontal: 20,
-            borderRadius: 40,
-            justifyContent: "center",
-            alignItems: "flex-end",
-            opacity: 0.5
-          }}
-        >
-          <Text
-            style={{
-              color: theme.NEUTRAL[100],
-              fontWeight: "600",
-            }}
-          >
-            {details.duration} mins
           </Text>
         </View>
       </View>

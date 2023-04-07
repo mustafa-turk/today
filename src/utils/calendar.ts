@@ -33,6 +33,7 @@ export const getEvents = async (cals, currentDate: Date, currentCalendarId: stri
     .map((event: Calendar.Event) => ({
       id: event.id,
       calendarId: event.calendarId,
+      calendarTitle: find(cals, { id: event.calendarId }).title,
       color: find(cals, { id: event.calendarId }).color,
       title: event.title,
       startDate: event.startDate,

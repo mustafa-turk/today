@@ -32,13 +32,13 @@ type Props = {
 };
 
 const EventDetails: React.FC<Props> = ({ navigation, route }) => {
-  const { scheduleNotification } = useNotifications();
+  // const { scheduleNotification } = useNotifications(); temporary remove
   const { event, defaultCalendarId, date, calendars, isEmpty } = route.params;
 
   const emptyEvent = {
     calendarId: defaultCalendarId,
-    startDate: new Date(date),
-    endDate: dateUtils.getDayPlusHours(date, 1),
+    startDate: dateUtils.getDayPlusHours(date, 1),
+    endDate: dateUtils.getDayPlusHours(date, 2),
     title: "",
   };
 
@@ -129,7 +129,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         style={{
           borderRadius: 10,
           padding: 16,
-          backgroundColor: "#262626",
+          backgroundColor: theme.GRAY[300],
           fontSize: 18,
           color: "white",
         }}
@@ -159,7 +159,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
               activeOpacity={0.8}
               onPress={() => onCalendarPress(calendar.id)}
               style={{
-                backgroundColor: "#262626",
+                backgroundColor: theme.GRAY[300],
                 padding: 12,
                 borderRadius: 8,
                 flexDirection: "row",
@@ -167,8 +167,8 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
                 borderWidth: 1,
                 borderColor:
                   calendar.id === updatedEvent.calendarId
-                    ? "#525252"
-                    : "#262626",
+                    ? theme.GRAY[100]
+                    : theme.GRAY[300],
               }}
             >
               <View
@@ -195,7 +195,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
       <View style={{ marginTop: 10, gap: 10 }}>
         <View
           style={{
-            backgroundColor: "#262626",
+            backgroundColor: theme.GRAY[300],
             borderRadius: 10,
             paddingHorizontal: 16,
             paddingVertical: 10,
@@ -218,7 +218,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
 
         <View
           style={{
-            backgroundColor: "#262626",
+            backgroundColor: theme.GRAY[300],
             borderRadius: 10,
             paddingHorizontal: 16,
             paddingVertical: 10,
@@ -256,7 +256,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#171717",
+    backgroundColor: theme.GRAY[400],
     padding: 20,
   },
   cancel: {

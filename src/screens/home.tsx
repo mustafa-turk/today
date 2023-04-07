@@ -21,8 +21,7 @@ import * as calendar from "@/utils/calendar";
 
 import theme from "@/styles/theme";
 
-import { CalendarType, EventType, RootStackParamList } from "@/utils/types"
-import useNotifications from "@/hooks/use-notifications";
+import { CalendarType, EventType, RootStackParamList } from "@/utils/types";
 
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
@@ -79,9 +78,14 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [currentDate, currentCalendarId]);
 
   const eventsLabel = `${events.length} ${events.length === 1 ? "event" : "events"}`;
+  const isToday = date.isToday(currentDate);
 
   return (
     <Screen>
+      <Button onPress={() => setCurrentDate(new Date())} style={{ backgroundColor: '#295EF2', alignSelf: 'center', marginBottom: 14, padding: 6, paddingHorizontal: 12, borderRadius: 20 }}>
+        <Text style={{ color: 'white', fontWeight: "500" }}>{isToday ? "Today" : "Back to Today"}</Text>
+      </Button>
+
       <View
         style={{
           ...styles.horizontalSafeAreaPadding,
@@ -107,9 +111,10 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       <View
         style={{
           marginTop: 40,
+          marginBottom: 20
         }}
       >
-        <Text style={{ color: "white", fontWeight: "600", fontSize: 18, ...styles.horizontalSafeAreaPadding }}>
+        <Text style={{ color: "white", fontWeight: "600", fontSize: 18, marginBottom: 8, ...styles.horizontalSafeAreaPadding }}>
           Calendars
         </Text>
         <ScrollView
@@ -122,22 +127,20 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <Button
             onPress={() => setCurrentCalendarId('all')}
             style={{
-              backgroundColor: currentCalendarId === "all" ? theme.NEUTRAL[100] : theme.NEUTRAL[800],
+              backgroundColor: currentCalendarId === "all" ? theme.NEUTRAL[100] : theme.GRAY[300],
               padding: 12,
               paddingHorizontal: 20,
               borderRadius: 8,
               flexDirection: "row",
               marginRight: 10,
               gap: 8,
-              borderWidth: 1,
-              borderColor: theme.NEUTRAL[800],
               marginLeft: 20
             }}
           >
             <>
               <Text
                 style={{
-                  color: currentCalendarId === "all" ? theme.NEUTRAL[900] : "white",
+                  color: currentCalendarId === "all" ? "#212224" : "white",
                   fontSize: 16,
                 }}
               >
@@ -150,17 +153,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               key={key}
               onPress={() => setCurrentCalendarId(calendar.id)}
               style={{
-                backgroundColor: currentCalendarId === calendar.id ? theme.NEUTRAL[100] : theme.NEUTRAL[800],
+                backgroundColor: currentCalendarId === calendar.id ? theme.NEUTRAL[100] : theme.GRAY[300],
                 padding: 12,
                 borderRadius: 8,
                 flexDirection: "row",
                 marginRight: 10,
                 gap: 8,
-                borderWidth: 1,
-                borderColor:
-                  calendar.id === currentCalendarId
-                    ? "#525252"
-                    : theme.NEUTRAL[800],
               }}
             >
               <>
@@ -174,7 +172,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                 />
                 <Text
                   style={{
-                    color: currentCalendarId === calendar.id ? theme.NEUTRAL[900] : "white",
+                    color: currentCalendarId === calendar.id ? "#212224" : "white",
                     fontSize: 16,
                   }}
                 >
@@ -186,16 +184,15 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <Button
             onPress={() => navigation.navigate('NewCalendar')}
             style={{
-              backgroundColor: "black",
+              backgroundColor: theme.GRAY[500],
               padding: 12,
-              paddingHorizontal: 20,
+              paddingRight: 16,
               borderRadius: 8,
               flexDirection: "row",
               marginRight: 20,
               gap: 8,
               borderWidth: 1,
-              borderStyle: 'dotted',
-              borderColor: theme.NEUTRAL[600]
+              borderColor: theme.GRAY[100]
             }}
           >
             <PlusIcon size={18} color={theme.NEUTRAL[300]} />
@@ -218,7 +215,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             alignItems: "center",
             justifyContent: "space-between",
             paddingHorizontal: 25,
-            paddingVertical: 20,
+            paddingBottom: 15,
             borderBottomWidth: 1,
             borderBottomColor: theme.NEUTRAL[800]
           }}
@@ -291,19 +288,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18
   },
   eventsContainer: {
-    position: "absolute",
-    left: 0,
-    bottom: 0,
-    right: 0,
-    height: "70%",
-    backgroundColor: theme.NEUTRAL[950],
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    paddingTop: 15,
+    backgroundColor: "#151618",
+    borderTopColor: "#1E1D1F",
+    borderTopWidth: 1,
+    flex: 1
   },
   eventsList: {
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    marginBottom: 30
+    marginBottom: 30,
   },
   horizontalSafeAreaPadding: {
     paddingHorizontal: 20

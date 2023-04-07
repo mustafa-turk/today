@@ -37,7 +37,7 @@ const NewCalendar: React.FC<Props> = (props) => {
         style={{
           borderRadius: 10,
           padding: 16,
-          backgroundColor: "#262626",
+          backgroundColor: theme.GRAY[300],
           fontSize: 18,
           color: "white",
         }}
@@ -51,7 +51,7 @@ const NewCalendar: React.FC<Props> = (props) => {
         autoComplete='off'
       />
       <View style={{ gap: 6, flexDirection: 'row', marginTop: 20 }}>
-        {CALENDAR_COLORS.map(c => <Button onPress={() => setColor(c)} style={{ borderRadius: 20, backgroundColor: c, width: 35, height: 35, borderWidth: 2, borderColor: color === c ? theme.NEUTRAL[200] : "transparent", padding: 4 }} />)}
+        {CALENDAR_COLORS.map(c => <Button key={c} onPress={() => setColor(c)} style={{ borderRadius: 20, backgroundColor: c, width: 35, height: 35, borderWidth: 2, borderColor: color === c ? theme.NEUTRAL[200] : "transparent", padding: 4 }} />)}
       </View>
     </ModalScreen>
   )

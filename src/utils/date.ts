@@ -45,6 +45,7 @@ export const timeBetweenDates = (
 export const getDayPlusHours = (date: Date, hours: number) => {
   const today = new Date(date);
   today.setHours(today.getHours() + hours);
+  today.setMinutes(0);
   return today;
 }
 
@@ -67,4 +68,11 @@ export const getPreviousDay = (date: Date) => {
   previousDay.setDate(previousDay.getDate() - 1);
 
   return previousDay;
+}
+
+export const isToday = (date: Date) => {
+  const today = new Date()
+  return date.getDate() == today.getDate() &&
+    date.getMonth() == today.getMonth() &&
+    date.getFullYear() == today.getFullYear()
 }

@@ -1,10 +1,12 @@
-import { View, Text } from "react-native";
+import { Text } from "react-native";
+
+import Screen from "@/components/screen";
 
 const GrantAccess = () => {
   return (
-    <View>
+    <Screen>
       <Text>Please do something</Text>
-    </View>
+    </Screen>
   )
 }
 
