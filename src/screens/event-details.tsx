@@ -13,8 +13,6 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 
-import useNotifications from "@/hooks/use-notifications";
-
 import * as dateUtils from "@/utils/date";
 import theme from "@/styles/theme";
 
@@ -32,7 +30,6 @@ type Props = {
 };
 
 const EventDetails: React.FC<Props> = ({ navigation, route }) => {
-  // const { scheduleNotification } = useNotifications(); temporary remove
   const { event, defaultCalendarId, date, calendars, isEmpty } = route.params;
 
   const emptyEvent = {
