@@ -26,7 +26,7 @@ const ListItem = ({ children, enabled, onPress }) => (
   >
     <View
       style={{
-        backgroundColor: theme.GRAY[400],
+        backgroundColor: theme.GRAY[500],
       }}
     >
       {children}

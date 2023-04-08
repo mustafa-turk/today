@@ -1,7 +1,7 @@
 import { TouchableOpacity, ViewStyle } from "react-native";
 
 type ButtonProps = {
-  children: JSX.Element | JSX.Element[] | string;
+  children?: JSX.Element | JSX.Element[] | string;
   onPress: () => void;
   style: ViewStyle;
 };

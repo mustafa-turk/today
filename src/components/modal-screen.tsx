@@ -68,7 +68,7 @@ const ModalScreen: React.FC<Props> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.GRAY[400],
+    backgroundColor: theme.GRAY[500],
     padding: 20,
   },
   cancel: {

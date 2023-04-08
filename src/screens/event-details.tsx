@@ -16,6 +16,7 @@ import * as calendar from "@/utils/calendar";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { EventType, RootStackParamList } from "@/utils/types";
+import Button from "@/components/button";
 
 type EventDetailsScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -146,12 +147,17 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={{ gap: 10, marginBottom: 30 }}>
+      <View style={{ marginBottom: 20 }}>
         <TextInput
           placeholder='Event Title'
           onChangeText={onTitleChange}
           value={updatedEvent.title}
           editable={updatedEvent.allowsModifications}
+          style={{
+            borderBottomWidth: "0",
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
         />
 
         <TextInput
@@ -159,59 +165,61 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
           onChangeText={onNotesChange}
           value={updatedEvent.notes}
           editable={updatedEvent.allowsModifications}
+          style={{
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+          }}
         />
-
-        {isEmpty && (
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 8,
-              flexWrap: "wrap",
-            }}
-          >
-            {calendar
-              .filterWritableCalendars(calendars)
-              .map((calendar, key) => (
-                <TouchableOpacity
-                  key={key}
-                  activeOpacity={0.8}
-                  onPress={() => onCalendarPress(calendar.id)}
-                  style={{
-                    backgroundColor: theme.GRAY[300],
-                    padding: 12,
-                    borderRadius: 8,
-                    flexDirection: "row",
-                    gap: 6,
-                    borderWidth: 1,
-                    borderColor:
-                      calendar.id === updatedEvent.calendarId
-                        ? theme.GRAY[100]
-                        : theme.GRAY[300],
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: calendar.color,
-                      width: 20,
-                      height: 20,
-                      borderRadius: 6,
-                    }}
-                  />
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                    }}
-                  >
-                    {calendar.title}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-          </View>
-        )}
       </View>
 
-      <View style={{ marginTop: 10, gap: 10 }}>
+      {isEmpty && (
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            flexWrap: "wrap",
+            marginBottom: 20,
+          }}
+        >
+          {calendar.filterWritableCalendars(calendars).map((calendar, key) => (
+            <Button
+              key={key}
+              onPress={() => onCalendarPress(calendar.id)}
+              style={{
+                ...styles.calenderButton,
+                borderRadius: 10,
+                backgroundColor:
+                  calendar.id === updatedEvent.calendarId
+                    ? theme.NEUTRAL[100]
+                    : theme.GRAY[300],
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: calendar.color,
+                  width: 20,
+                  height: 20,
+                  borderRadius: 6,
+                }}
+              />
+              <Text
+                style={{
+                  color:
+                    calendar.id === updatedEvent.calendarId
+                      ? theme.GRAY[500]
+                      : "white",
+                  fontSize: 16,
+                  fontWeight: "500",
+                }}
+              >
+                {calendar.title}
+              </Text>
+            </Button>
+          ))}
+        </View>
+      )}
+
+      <View>
         <View
           style={{
             backgroundColor: theme.GRAY[300],
@@ -221,11 +229,14 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            borderWidth: 1,
+            borderColor: theme.GRAY[100],
+            borderBottomWidth: 0,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
           }}
         >
-          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>
-            Starts at
-          </Text>
+          <Text style={{ color: "#707d8a", fontSize: 18 }}>Starts at</Text>
           <DateTimePicker
             locale={"en_GB"}
             themeVariant='dark'
@@ -247,11 +258,13 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
+            borderWidth: 1,
+            borderColor: theme.GRAY[100],
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
           }}
         >
-          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>
-            Ends at
-          </Text>
+          <Text style={{ color: "#707d8a", fontSize: 18 }}>Ends at</Text>
           <DateTimePicker
             locale={"en_GB"}
             themeVariant='dark'
@@ -281,13 +294,26 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.GRAY[400],
+    backgroundColor: theme.GRAY[500],
     padding: 20,
   },
   cancel: {
     color: "#ef4444",
     fontWeight: "500",
     fontSize: 16,
+  },
+  calenderButton: {
+    padding: 12,
+    borderRadius: 8,
+    flexDirection: "row",
+    gap: 8,
+    borderWidth: 1,
+    borderColor: theme.GRAY[100],
+  },
+  calenderIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 6,
   },
 });
 

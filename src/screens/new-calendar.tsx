@@ -1,15 +1,17 @@
 import * as React from "react";
 import * as Calendar from "expo-calendar";
 
-import { View, StyleSheet, TextInput } from "react-native";
+import { View } from "react-native";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { RootStackParamList } from "@/utils/types";
 
 import ModalScreen from "@/components/modal-screen";
-import theme from "@/styles/theme";
 import Button from "@/components/button";
+import TextInput from "@/components/text-input";
+
+import theme from "@/styles/theme";
 
 type NewCalendarScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -44,21 +46,10 @@ const NewCalendar: React.FC<Props> = (props) => {
   return (
     <ModalScreen isEmpty {...props} onSave={createCalendar}>
       <TextInput
-        style={{
-          borderRadius: 10,
-          padding: 16,
-          backgroundColor: theme.GRAY[300],
-          fontSize: 18,
-          color: "white",
-        }}
         placeholder='Calendar name'
-        placeholderTextColor='#d4d4d4'
         onChangeText={setTitle}
         value={title}
-        autoCorrect={false}
-        keyboardAppearance='dark'
-        autoCapitalize='none'
-        autoComplete='off'
+        style={{}}
       />
       <View style={{ gap: 6, flexDirection: "row", marginTop: 20 }}>
         {CALENDAR_COLORS.map((c) => (
@@ -80,7 +71,5 @@ const NewCalendar: React.FC<Props> = (props) => {
     </ModalScreen>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default NewCalendar;

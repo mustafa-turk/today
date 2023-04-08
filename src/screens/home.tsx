@@ -172,7 +172,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               backgroundColor:
                 currentCalendarId === "all"
                   ? theme.NEUTRAL[100]
-                  : theme.GRAY[300],
+                  : theme.GRAY[500],
             }}
           >
             <>
@@ -195,7 +195,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                 backgroundColor:
                   currentCalendarId === calendar.id
                     ? theme.NEUTRAL[100]
-                    : theme.GRAY[300],
+                    : theme.GRAY[500],
               }}
             >
               <View
@@ -305,6 +305,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     gap: 8,
     marginLeft: 20,
+    borderWidth: 1,
+    borderColor: theme.GRAY[100],
   },
   calenderButton: {
     padding: 12,
@@ -312,6 +314,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginRight: 10,
     gap: 8,
+    borderWidth: 1,
+    borderColor: theme.GRAY[100],
   },
   calenderIcon: {
     width: 20,
@@ -335,7 +339,7 @@ const styles = StyleSheet.create({
   },
   eventsContainer: {
     paddingTop: 15,
-    backgroundColor: theme.GRAY[400],
+    backgroundColor: theme.GRAY[500],
     borderTopColor: "#1E1D1F",
     borderTopWidth: 1,
     flex: 1,
