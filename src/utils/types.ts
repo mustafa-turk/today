@@ -9,6 +9,7 @@ export type CalendarType = {
   color: string;
   title: string;
   id: string;
+  allowsModifications: boolean;
 };
 
 export type EventType = {
@@ -21,5 +22,6 @@ export type EventType = {
   calendarId: string;
   startDate: Date | string;
   endDate: Date | string;
-  notes: string
+  notes: string,
+  allowsModifications: boolean
 };

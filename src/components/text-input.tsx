@@ -13,7 +13,7 @@ function CustomTextInput({ placeholder, value, onChangeText, ...props }) {
         color: "white",
       }}
       placeholder={placeholder}
-      placeholderTextColor="#d4d4d4"
+      placeholderTextColor={theme.NEUTRAL[400]}
       onChangeText={onChangeText}
       value={value}
       autoCorrect={false}

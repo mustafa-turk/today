@@ -1,12 +1,13 @@
 import * as Calendar from "expo-calendar";
 import * as date from "@/utils/date";
 import { find, flatten } from "lodash";
+import { CalendarType } from "./types";
 
 export const getCalendars = async () => {
   const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
   return calendars
-    .filter((calendar) => calendar.allowsModifications)
     .map((calendar) => ({
+      allowsModifications: calendar.allowsModifications,
       title: calendar.title,
       color: calendar.color,
       id: calendar.id,
@@ -34,6 +35,7 @@ export const getEvents = async (cals, currentDate: Date, currentCalendarId: stri
       id: event.id,
       notes: event.notes,
       calendarId: event.calendarId,
+      allowsModifications: find(cals, { id: event.calendarId }).allowsModifications,
       calendarTitle: find(cals, { id: event.calendarId }).title,
       color: find(cals, { id: event.calendarId }).color,
       title: event.title,
@@ -43,6 +45,10 @@ export const getEvents = async (cals, currentDate: Date, currentCalendarId: stri
       startTime: date.getTimeFromString(event.startDate),
       endTime: date.getTimeFromString(event.endDate),
     }));
+}
+
+export const filterWritableCalendars = (calendars: CalendarType[]) => {
+  return calendars.filter((calendar) => calendar.allowsModifications);
 }
 
 export const getDefaultCalendarId = async () => {

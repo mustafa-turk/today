@@ -17,9 +17,12 @@ import TextInput from "@/components/text-input";
 import * as dateUtils from "@/utils/date";
 import theme from "@/styles/theme";
 
+import * as calendar from "@/utils/calendar";
+
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { EventType, RootStackParamList } from "@/utils/types";
+import { find } from "lodash";
 
 type EventDetailsScreenRouteProp = RouteProp<RootStackParamList, 'EventDetails'>;
 
@@ -38,6 +41,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
     startDate: dateUtils.getDayPlusHours(date, 1),
     endDate: dateUtils.getDayPlusHours(date, 2),
     title: "",
+    allowsModifications: true
   };
 
   const [updatedEvent, setUpdatedEvent] = React.useState<EventType | Partial<EventType>>(
@@ -117,11 +121,16 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
           marginBottom: 30,
           flexDirection: "row",
           justifyContent: "space-between",
+          alignItems: 'center'
         }}
       >
         <TouchableOpacity onPress={onCancel}>
           <Text style={styles.cancel}>Cancel</Text>
         </TouchableOpacity>
+
+        {!updatedEvent.allowsModifications && <View style={{ backgroundColor: "#ef4444", alignSelf: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
+          <Text style={{ color: 'white' }}>Read-only</Text>
+        </View>}
 
         <TouchableOpacity onPress={onSave}>
           <Text style={{ ...styles.cancel, color: "white" }}>Save</Text>
@@ -129,17 +138,18 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
       </View>
 
       <View style={{ gap: 10, marginBottom: 30 }}>
-
         <TextInput
           placeholder='Event Title'
           onChangeText={onTitleChange}
           value={updatedEvent.title}
+          editable={updatedEvent.allowsModifications}
         />
 
         <TextInput
           placeholder='Event Notes'
           onChangeText={onNotesChange}
           value={updatedEvent.notes}
+          editable={updatedEvent.allowsModifications}
         />
 
         {isEmpty && (
@@ -150,7 +160,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
               flexWrap: "wrap",
             }}
           >
-            {calendars.map((calendar, key) => (
+            {calendar.filterWritableCalendars(calendars).map((calendar, key) => (
               <TouchableOpacity
                 key={key}
                 activeOpacity={0.8}
@@ -211,6 +221,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             value={new Date(updatedEvent.startDate)}
             mode='time'
             onChange={onStartTimeChange}
+            disabled={!updatedEvent.allowsModifications}
           />
         </View>
 
@@ -234,11 +245,12 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             value={new Date(updatedEvent.endDate)}
             mode='time'
             onChange={onEndTimeChange}
+            disabled={!updatedEvent.allowsModifications}
           />
         </View>
       </View>
 
-      {!isEmpty && (
+      {!isEmpty && updatedEvent.allowsModifications && (
         <TouchableOpacity onPress={onDelete}>
           <Text
             style={{ ...styles.cancel, textAlign: "center", marginTop: 30 }}

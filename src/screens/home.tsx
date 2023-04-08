@@ -14,7 +14,7 @@ import Event from "@/components/event";
 import Button from "@/components/button";
 import Screen from "@/components/screen";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
-import { isEmpty } from "lodash";
+import { find, isEmpty } from "lodash";
 
 import * as date from "@/utils/date";
 import * as calendar from "@/utils/calendar";
@@ -78,12 +78,13 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [currentDate, currentCalendarId]);
 
   const eventsLabel = `${events.length} ${events.length === 1 ? "event" : "events"}`;
-  const isToday = date.isToday(currentDate);
+
+  const isCalendarWritable = find(calendars, (cal) => cal.id === currentCalendarId)?.allowsModifications;
 
   return (
     <Screen>
       <Button onPress={() => setCurrentDate(new Date())} style={{ backgroundColor: '#295EF2', alignSelf: 'center', marginBottom: 14, padding: 6, paddingHorizontal: 12, borderRadius: 20 }}>
-        <Text style={{ color: 'white', fontWeight: "500" }}>{isToday ? "Today" : "Back to Today"}</Text>
+        <Text style={{ color: 'white', fontWeight: "500" }}>{date.isToday(currentDate) ? "Today" : "Back to Today"}</Text>
       </Button>
 
       <View
@@ -227,7 +228,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             onPress={() =>
               navigation.navigate("EventDetails", {
                 calendars,
-                defaultCalendarId: currentCalendarId === "all" ? defaultCalendarId : currentCalendarId,
+                defaultCalendarId: currentCalendarId === "all" || !isCalendarWritable ? defaultCalendarId : currentCalendarId,
                 date: currentDate.toISOString(),
                 isEmpty: true,
               })
