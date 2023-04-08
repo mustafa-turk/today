@@ -7,12 +7,14 @@ export const getCalendars = async () => {
   const calendars = await Calendar.getCalendarsAsync(
     Calendar.EntityTypes.EVENT
   );
-  return calendars.map((calendar) => ({
-    allowsModifications: calendar.allowsModifications,
-    title: calendar.title,
-    color: calendar.color,
-    id: calendar.id,
-  }));
+  return calendars
+    .filter((calendar) => calendar.title !== "Birthdays")
+    .map((calendar) => ({
+      allowsModifications: calendar.allowsModifications,
+      title: calendar.title,
+      color: calendar.color,
+      id: calendar.id,
+    }));
 };
 
 export const getEvents = async (

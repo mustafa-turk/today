@@ -10,6 +10,7 @@ import TextInput from "@/components/text-input";
 
 import * as dateUtils from "@/utils/date";
 import theme from "@/styles/theme";
+import translator from "@/utils/i18n";
 
 import * as calendar from "@/utils/calendar";
 
@@ -95,20 +96,31 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
     setUpdatedEvent({ ...updatedEvent, notes });
   };
 
-  const onStartTimeChange = (event: DateTimePickerEvent, date: Date) => {
+  const onStartTimeChange = (
+    event: DateTimePickerEvent,
+    selectedDate: Date
+  ) => {
+    const currentDate = new Date(date);
+    const hours = new Date(selectedDate).getHours();
+    currentDate.setHours(hours);
+
     if (event.type !== "dismissed") {
       setUpdatedEvent({
         ...updatedEvent,
-        startDate: new Date(date),
+        startDate: new Date(currentDate),
       });
     }
   };
 
-  const onEndTimeChange = (event: DateTimePickerEvent, date: Date) => {
+  const onEndTimeChange = (event: DateTimePickerEvent, selectedDate: Date) => {
+    const currentDate = new Date(date);
+    const hours = new Date(selectedDate).getHours();
+    currentDate.setHours(hours);
+
     if (event.type !== "dismissed") {
       setUpdatedEvent({
         ...updatedEvent,
-        endDate: new Date(date),
+        endDate: new Date(currentDate),
       });
     }
   };
@@ -131,7 +143,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         }}
       >
         <TouchableOpacity onPress={onCancel}>
-          <Text style={styles.cancel}>Cancel</Text>
+          <Text style={styles.cancel}>{translator.t("cancel")}</Text>
         </TouchableOpacity>
 
         {!updatedEvent.allowsModifications && (
@@ -149,25 +161,27 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         )}
 
         <TouchableOpacity onPress={onSave}>
-          <Text style={{ ...styles.cancel, color: "white" }}>Save</Text>
+          <Text style={{ ...styles.cancel, color: "white" }}>
+            {translator.t("save")}
+          </Text>
         </TouchableOpacity>
       </View>
 
       <View style={{ marginBottom: 20 }}>
         <TextInput
-          placeholder='Event Title'
+          placeholder={translator.t("event_title")}
           onChangeText={onTitleChange}
           value={updatedEvent.title}
           editable={updatedEvent.allowsModifications}
           style={{
-            borderBottomWidth: "0",
+            borderBottomWidth: 0,
             borderBottomLeftRadius: 0,
             borderBottomRightRadius: 0,
           }}
         />
 
         <TextInput
-          placeholder='Event Notes'
+          placeholder={translator.t("event_notes")}
           onChangeText={onNotesChange}
           value={updatedEvent.notes}
           editable={updatedEvent.allowsModifications}
@@ -178,7 +192,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         />
 
         <TextInput
-          placeholder='Event Location'
+          placeholder={translator.t("event_location")}
           onChangeText={onLocationChange}
           value={updatedEvent.location}
           editable={updatedEvent.allowsModifications}
@@ -250,7 +264,9 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             borderBottomRightRadius: 0,
           }}
         >
-          <Text style={{ color: "#707d8a", fontSize: 18 }}>Starts at</Text>
+          <Text style={{ color: "#707d8a", fontSize: 18 }}>
+            {translator.t("starts_at")}
+          </Text>
           <DateTimePicker
             locale={"en_GB"}
             themeVariant='dark'
@@ -278,7 +294,9 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             borderTopRightRadius: 0,
           }}
         >
-          <Text style={{ color: "#707d8a", fontSize: 18 }}>Ends at</Text>
+          <Text style={{ color: "#707d8a", fontSize: 18 }}>
+            {translator.t("ends_at")}
+          </Text>
           <DateTimePicker
             locale={"en_GB"}
             themeVariant='dark'
@@ -297,7 +315,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
           <Text
             style={{ ...styles.cancel, textAlign: "center", marginTop: 30 }}
           >
-            Delete Event
+            {translator.t("delete_event")}
           </Text>
         </TouchableOpacity>
       )}

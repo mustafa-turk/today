@@ -1,0 +1,19 @@
+{
+  "calendars": "Calendars",
+  "all": "All",
+  "new_calendar": "New Calendar",
+  "event": "event",
+  "events": "events",
+  "today": "Today",
+  "back_to_today": "Back to Today",
+  "looks_empty": "It looks like a chill day",
+  "cancel": "Cancel",
+  "save": "Save",
+  "event_title": "Event Title",
+  "event_notes": "Event Notes",
+  "event_location": "Event Location",
+  "starts_at": "Starts at",
+  "ends_at": "Ends at",
+  "calendar_name": "Calendar Name",
+  "delete_event": "Delete Event"
+}

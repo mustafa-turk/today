@@ -2,6 +2,8 @@ import theme from "@/styles/theme";
 import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
+import translator from "@/utils/i18n";
+
 type Props = {
   children: JSX.Element | JSX.Element[];
   navigation: any;
@@ -42,11 +44,13 @@ const ModalScreen: React.FC<Props> = ({
         }}
       >
         <TouchableOpacity onPress={handleCancel}>
-          <Text style={styles.cancel}>Cancel</Text>
+          <Text style={styles.cancel}>{translator.t("cancel")}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handleSave}>
-          <Text style={{ ...styles.cancel, color: "white" }}>Save</Text>
+          <Text style={{ ...styles.cancel, color: "white" }}>
+            {translator.t("save")}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -57,7 +61,7 @@ const ModalScreen: React.FC<Props> = ({
           <Text
             style={{ ...styles.cancel, textAlign: "center", marginTop: 30 }}
           >
-            Delete Event
+            {translator.t("delete_event")}
           </Text>
         </TouchableOpacity>
       )}

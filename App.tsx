@@ -15,6 +15,8 @@ import GrantAccessScreen from "@/screens/grant-access";
 
 import { RootStackParamList } from "@/utils/types";
 
+import "@/utils/i18n";
+
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {

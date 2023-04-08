@@ -12,6 +12,7 @@ import Button from "@/components/button";
 import TextInput from "@/components/text-input";
 
 import theme from "@/styles/theme";
+import translator from "@/utils/i18n";
 
 type NewCalendarScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -46,7 +47,7 @@ const NewCalendar: React.FC<Props> = (props) => {
   return (
     <ModalScreen isEmpty {...props} onSave={createCalendar}>
       <TextInput
-        placeholder='Calendar name'
+        placeholder={translator.t("calendar_name")}
         onChangeText={setTitle}
         value={title}
         style={{}}

@@ -1,8 +1,12 @@
-import moment from "moment";
+import * as Localization from "expo-localization";
+import { capitalize } from "lodash";
 
 export const getDay = (date: Date) => {
-  const day = moment(date).format("dddd");
-  return day;
+  const day = new Intl.DateTimeFormat(Localization.locale, {
+    weekday: "long",
+  }).format(date);
+
+  return capitalize(day);
 };
 
 export const getDayDigits = (date: Date) => {

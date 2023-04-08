@@ -12,6 +12,8 @@ import Swipeable from "@/components/swipeable";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
 import { find, isEmpty } from "lodash";
 
+import translator from "@/utils/i18n";
+
 import * as date from "@/utils/date";
 import * as calendar from "@/utils/calendar";
 
@@ -85,7 +87,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const eventsLabel = `${events.length} ${
-    events.length === 1 ? "event" : "events"
+    events.length === 1 ? translator.t("event") : translator.t("events")
   }`;
 
   const isCalendarWritable = find(
@@ -109,7 +111,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         }}
       >
         <Text style={{ color: "white", fontWeight: "500" }}>
-          {date.isToday(currentDate) ? "Today" : "Back to Today"}
+          {date.isToday(currentDate)
+            ? translator.t("today")
+            : translator.t("back_to_today")}
         </Text>
       </Button>
 
@@ -158,7 +162,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             ...styles.horizontalSafeAreaPadding,
           }}
         >
-          Calendars
+          {translator.t("calendars")}
         </Text>
         <ScrollView
           showsHorizontalScrollIndicator={false}
@@ -184,7 +188,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                   fontSize: 16,
                 }}
               >
-                All
+                {translator.t("all")}
               </Text>
             </>
           </Button>
@@ -222,7 +226,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             style={styles.createCalendarButton}
           >
             <PlusIcon size={18} color={theme.NEUTRAL[300]} />
-            <Text style={styles.createCalendarButtonText}>New Calendar</Text>
+            <Text style={styles.createCalendarButtonText}>
+              {translator.t("new_calendar")}
+            </Text>
           </Button>
         </ScrollView>
       </View>
@@ -249,7 +255,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         </View>
         {isEmpty(events) ? (
           <Text style={styles.eventsContainerEmptyMessage}>
-            Looks like a chill day
+            {translator.t("looks_empty")}
           </Text>
         ) : (
           <FlatList
