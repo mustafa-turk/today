@@ -16,11 +16,25 @@ const Event = ({ details, onPress }) => {
       onPress={onPress}
       style={{
         padding: 20,
-        paddingHorizontal: 25
+        paddingHorizontal: 25,
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: 'center', gap: 6, marginBottom: 10 }}>
-        <View style={{ backgroundColor: details.color, width: 15, height: 15, borderRadius: 10 }} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 6,
+          marginBottom: 10,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: details.color,
+            width: 15,
+            height: 15,
+            borderRadius: 10,
+          }}
+        />
         <Text
           style={{
             color: colors.subText,
@@ -56,7 +70,7 @@ const Event = ({ details, onPress }) => {
         style={{
           marginTop: 10,
           flexDirection: "row",
-          gap: 30
+          gap: 30,
         }}
       >
         <View>

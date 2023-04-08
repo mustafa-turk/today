@@ -1,8 +1,14 @@
 export type RootStackParamList = {
-  Home: { date: Date } | undefined,
-  GrantAccess: undefined,
-  EventDetails: { defaultCalendarId: string, event: EventType, date: Date, calendars: CalendarType[], isEmpty: boolean },
-  NewCalendar: undefined
+  Home: { date: Date | string } | undefined;
+  GrantAccess: undefined;
+  EventDetails: {
+    defaultCalendarId?: string;
+    event?: EventType;
+    date: string;
+    calendars: CalendarType[];
+    isEmpty?: boolean;
+  };
+  NewCalendar: undefined;
 };
 
 export type CalendarType = {
@@ -22,6 +28,6 @@ export type EventType = {
   calendarId: string;
   startDate: Date | string;
   endDate: Date | string;
-  notes: string,
-  allowsModifications: boolean
+  notes: string;
+  allowsModifications: boolean;
 };

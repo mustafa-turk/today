@@ -1,6 +1,6 @@
-import { TextInput } from 'react-native';
+import { TextInput } from "react-native";
 
-import theme from '@/styles/theme';
+import theme from "@/styles/theme";
 
 function CustomTextInput({ placeholder, value, onChangeText, ...props }) {
   return (
@@ -17,9 +17,9 @@ function CustomTextInput({ placeholder, value, onChangeText, ...props }) {
       onChangeText={onChangeText}
       value={value}
       autoCorrect={false}
-      keyboardAppearance="dark"
-      autoCapitalize="none"
-      autoComplete="off"
+      keyboardAppearance='dark'
+      autoCapitalize='none'
+      autoComplete='off'
       {...props}
     />
   );

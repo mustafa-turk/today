@@ -7,7 +7,7 @@ const GrantAccess = () => {
     <Screen>
       <Text>Please do something</Text>
     </Screen>
-  )
-}
+  );
+};
 
 export default GrantAccess;

@@ -4,17 +4,22 @@ import { find, flatten } from "lodash";
 import { CalendarType } from "./types";
 
 export const getCalendars = async () => {
-  const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
-  return calendars
-    .map((calendar) => ({
-      allowsModifications: calendar.allowsModifications,
-      title: calendar.title,
-      color: calendar.color,
-      id: calendar.id,
-    }))
-}
+  const calendars = await Calendar.getCalendarsAsync(
+    Calendar.EntityTypes.EVENT
+  );
+  return calendars.map((calendar) => ({
+    allowsModifications: calendar.allowsModifications,
+    title: calendar.title,
+    color: calendar.color,
+    id: calendar.id,
+  }));
+};
 
-export const getEvents = async (cals: CalendarType[], currentDate: Date, currentCalendarId: string) => {
+export const getEvents = async (
+  cals: CalendarType[],
+  currentDate: Date,
+  currentCalendarId: string
+) => {
   const events = cals.map((cal) =>
     Calendar.getEventsAsync(
       [cal.id],
@@ -30,12 +35,16 @@ export const getEvents = async (cals: CalendarType[], currentDate: Date, current
       (a: Calendar.Event, b: Calendar.Event) =>
         new Date(a.startDate).valueOf() - new Date(b.startDate).valueOf()
     )
-    .filter((event: Calendar.Event) => currentCalendarId === "all" || currentCalendarId === event.calendarId)
+    .filter(
+      (event: Calendar.Event) =>
+        currentCalendarId === "all" || currentCalendarId === event.calendarId
+    )
     .map((event: Calendar.Event) => ({
       id: event.id,
       notes: event.notes,
       calendarId: event.calendarId,
-      allowsModifications: find(cals, { id: event.calendarId }).allowsModifications,
+      allowsModifications: find(cals, { id: event.calendarId })
+        .allowsModifications,
       calendarTitle: find(cals, { id: event.calendarId }).title,
       color: find(cals, { id: event.calendarId }).color,
       title: event.title,
@@ -45,16 +54,16 @@ export const getEvents = async (cals: CalendarType[], currentDate: Date, current
       startTime: date.getTimeFromString(event.startDate),
       endTime: date.getTimeFromString(event.endDate),
     }));
-}
+};
 
 export const filterWritableCalendars = (calendars: CalendarType[]) => {
   return calendars.filter((calendar) => calendar.allowsModifications);
-}
+};
 
 export const getDefaultCalendarId = async () => {
   const defaultCalendar = await Calendar.getDefaultCalendarAsync();
   return defaultCalendar.id;
-}
+};
 
 export const deleteEvent = async (id) => {
   await Calendar.deleteEventAsync(id);

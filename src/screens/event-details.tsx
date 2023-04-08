@@ -1,12 +1,6 @@
-
 import * as React from "react";
 import * as Calendar from "expo-calendar";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -23,9 +17,15 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { EventType, RootStackParamList } from "@/utils/types";
 
-type EventDetailsScreenRouteProp = RouteProp<RootStackParamList, 'EventDetails'>;
+type EventDetailsScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "EventDetails"
+>;
 
-type EventDetailsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'EventDetails'>;
+type EventDetailsScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "EventDetails"
+>;
 
 type Props = {
   route: EventDetailsScreenRouteProp;
@@ -40,12 +40,12 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
     startDate: dateUtils.getDayPlusHours(date, 1),
     endDate: dateUtils.getDayPlusHours(date, 2),
     title: "",
-    allowsModifications: true
+    allowsModifications: true,
   };
 
-  const [updatedEvent, setUpdatedEvent] = React.useState<EventType | Partial<EventType>>(
-    isEmpty ? emptyEvent : event
-  );
+  const [updatedEvent, setUpdatedEvent] = React.useState<
+    EventType | Partial<EventType>
+  >(isEmpty ? emptyEvent : event);
 
   const goBack = () => {
     navigation.navigate("Home", { date });
@@ -120,16 +120,26 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
           marginBottom: 30,
           flexDirection: "row",
           justifyContent: "space-between",
-          alignItems: 'center'
+          alignItems: "center",
         }}
       >
         <TouchableOpacity onPress={onCancel}>
           <Text style={styles.cancel}>Cancel</Text>
         </TouchableOpacity>
 
-        {!updatedEvent.allowsModifications && <View style={{ backgroundColor: "#ef4444", alignSelf: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
-          <Text style={{ color: 'white' }}>Read-only</Text>
-        </View>}
+        {!updatedEvent.allowsModifications && (
+          <View
+            style={{
+              backgroundColor: "#ef4444",
+              alignSelf: "center",
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 20,
+            }}
+          >
+            <Text style={{ color: "white" }}>Read-only</Text>
+          </View>
+        )}
 
         <TouchableOpacity onPress={onSave}>
           <Text style={{ ...styles.cancel, color: "white" }}>Save</Text>
@@ -159,42 +169,44 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
               flexWrap: "wrap",
             }}
           >
-            {calendar.filterWritableCalendars(calendars).map((calendar, key) => (
-              <TouchableOpacity
-                key={key}
-                activeOpacity={0.8}
-                onPress={() => onCalendarPress(calendar.id)}
-                style={{
-                  backgroundColor: theme.GRAY[300],
-                  padding: 12,
-                  borderRadius: 8,
-                  flexDirection: "row",
-                  gap: 6,
-                  borderWidth: 1,
-                  borderColor:
-                    calendar.id === updatedEvent.calendarId
-                      ? theme.GRAY[100]
-                      : theme.GRAY[300],
-                }}
-              >
-                <View
+            {calendar
+              .filterWritableCalendars(calendars)
+              .map((calendar, key) => (
+                <TouchableOpacity
+                  key={key}
+                  activeOpacity={0.8}
+                  onPress={() => onCalendarPress(calendar.id)}
                   style={{
-                    backgroundColor: calendar.color,
-                    width: 20,
-                    height: 20,
-                    borderRadius: 6,
-                  }}
-                />
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 16,
+                    backgroundColor: theme.GRAY[300],
+                    padding: 12,
+                    borderRadius: 8,
+                    flexDirection: "row",
+                    gap: 6,
+                    borderWidth: 1,
+                    borderColor:
+                      calendar.id === updatedEvent.calendarId
+                        ? theme.GRAY[100]
+                        : theme.GRAY[300],
                   }}
                 >
-                  {calendar.title}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <View
+                    style={{
+                      backgroundColor: calendar.color,
+                      width: 20,
+                      height: 20,
+                      borderRadius: 6,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                    }}
+                  >
+                    {calendar.title}
+                  </Text>
+                </TouchableOpacity>
+              ))}
           </View>
         )}
       </View>
@@ -211,7 +223,9 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>Starts at</Text>
+          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>
+            Starts at
+          </Text>
           <DateTimePicker
             locale={"en_GB"}
             themeVariant='dark'
@@ -235,7 +249,9 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>Ends at</Text>
+          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>
+            Ends at
+          </Text>
           <DateTimePicker
             locale={"en_GB"}
             themeVariant='dark'

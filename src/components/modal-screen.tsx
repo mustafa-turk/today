@@ -1,21 +1,20 @@
-
 import theme from "@/styles/theme";
 import * as React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 type Props = {
-  children: JSX.Element | JSX.Element[],
-  navigation: any,
-  isEmpty: boolean,
-  onSave: Function
-}
+  children: JSX.Element | JSX.Element[];
+  navigation: any;
+  isEmpty: boolean;
+  onSave: Function;
+};
 
-const ModalScreen: React.FC<Props> = ({ children, navigation, isEmpty, onSave }) => {
+const ModalScreen: React.FC<Props> = ({
+  children,
+  navigation,
+  isEmpty,
+  onSave,
+}) => {
   const goBack = () => {
     navigation.navigate("Home");
   };

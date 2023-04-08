@@ -3,13 +3,7 @@ import * as React from "react";
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-import {
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import Event from "@/components/event";
 import Button from "@/components/button";
@@ -25,12 +19,9 @@ import theme from "@/styles/theme";
 
 import { CalendarType, EventType, RootStackParamList } from "@/utils/types";
 
-type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
+type HomeScreenRouteProp = RouteProp<RootStackParamList, "Home">;
 
-type HomeScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Home'
->;
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
 
 type Props = {
   route: HomeScreenRouteProp;
@@ -42,7 +33,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [events, setEvents] = React.useState<EventType[]>([]);
 
   const [currentDate, setCurrentDate] = React.useState(new Date());
-  const [currentCalendarId, setCurrentCalendarId] = React.useState('all');
+  const [currentCalendarId, setCurrentCalendarId] = React.useState("all");
   const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
 
   useFocusEffect(
@@ -65,14 +56,18 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   React.useEffect(() => {
     (async () => {
       const id = await calendar.getDefaultCalendarId();
-      setDefaultCalendarId(id)
+      setDefaultCalendarId(id);
     })();
-  }, [])
+  }, []);
 
   React.useEffect(() => {
     (async () => {
       const cals = await calendar.getCalendars();
-      const evs = await calendar.getEvents(cals, currentDate, currentCalendarId);
+      const evs = await calendar.getEvents(
+        cals,
+        currentDate,
+        currentCalendarId
+      );
 
       setCalendars(cals);
       setEvents(evs);
@@ -81,18 +76,39 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleEventDelete = async (id: string) => {
     await calendar.deleteEvent(id);
-    const evs = await calendar.getEvents(calendars, currentDate, currentCalendarId);
+    const evs = await calendar.getEvents(
+      calendars,
+      currentDate,
+      currentCalendarId
+    );
     setEvents(evs);
-  }
+  };
 
-  const eventsLabel = `${events.length} ${events.length === 1 ? "event" : "events"}`;
+  const eventsLabel = `${events.length} ${
+    events.length === 1 ? "event" : "events"
+  }`;
 
-  const isCalendarWritable = find(calendars, (cal) => cal.id === currentCalendarId)?.allowsModifications;
+  const isCalendarWritable = find(
+    calendars,
+    (cal) => cal.id === currentCalendarId
+  )?.allowsModifications;
 
   return (
     <Screen>
-      <Button onPress={() => setCurrentDate(new Date())} style={{ backgroundColor: '#295EF2', alignSelf: 'center', marginBottom: 14, padding: 6, paddingHorizontal: 12, borderRadius: 20 }}>
-        <Text style={{ color: 'white', fontWeight: "500" }}>{date.isToday(currentDate) ? "Today" : "Back to Today"}</Text>
+      <Button
+        onPress={() => setCurrentDate(new Date())}
+        style={{
+          backgroundColor: "#295EF2",
+          alignSelf: "center",
+          marginBottom: 14,
+          padding: 6,
+          paddingHorizontal: 12,
+          borderRadius: 20,
+        }}
+      >
+        <Text style={{ color: "white", fontWeight: "500" }}>
+          {date.isToday(currentDate) ? "Today" : "Back to Today"}
+        </Text>
       </Button>
 
       <View
@@ -103,16 +119,24 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           alignItems: "center",
         }}
       >
-        <Button style={styles.button} onPress={() => setCurrentDate(date.getPreviousDay(currentDate))}>
+        <Button
+          style={styles.button}
+          onPress={() => setCurrentDate(date.getPreviousDay(currentDate))}
+        >
           <ArrowLeft size={24} color={theme.NEUTRAL[400]} />
         </Button>
 
         <View style={{ justifyContent: "center" }}>
           <Text style={styles.title}>{date.getDay(currentDate)}</Text>
-          <Text style={styles.date}>{`${date.getDayDigits(currentDate)} ${date.getMonth(currentDate)}`}</Text>
+          <Text style={styles.date}>{`${date.getDayDigits(
+            currentDate
+          )} ${date.getMonth(currentDate)}`}</Text>
         </View>
 
-        <Button style={styles.button} onPress={() => setCurrentDate(date.getNextDay(currentDate))}>
+        <Button
+          style={styles.button}
+          onPress={() => setCurrentDate(date.getNextDay(currentDate))}
+        >
           <ArrowRight size={24} color={theme.NEUTRAL[400]} />
         </Button>
       </View>
@@ -120,10 +144,18 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       <View
         style={{
           marginTop: 40,
-          marginBottom: 20
+          marginBottom: 20,
         }}
       >
-        <Text style={{ color: "white", fontWeight: "600", fontSize: 18, marginBottom: 8, ...styles.horizontalSafeAreaPadding }}>
+        <Text
+          style={{
+            color: "white",
+            fontWeight: "600",
+            fontSize: 18,
+            marginBottom: 8,
+            ...styles.horizontalSafeAreaPadding,
+          }}
+        >
           Calendars
         </Text>
         <ScrollView
@@ -134,16 +166,19 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           }}
         >
           <Button
-            onPress={() => setCurrentCalendarId('all')}
+            onPress={() => setCurrentCalendarId("all")}
             style={{
-              backgroundColor: currentCalendarId === "all" ? theme.NEUTRAL[100] : theme.GRAY[300],
+              backgroundColor:
+                currentCalendarId === "all"
+                  ? theme.NEUTRAL[100]
+                  : theme.GRAY[300],
               padding: 12,
               paddingHorizontal: 20,
               borderRadius: 8,
               flexDirection: "row",
               marginRight: 10,
               gap: 8,
-              marginLeft: 20
+              marginLeft: 20,
             }}
           >
             <>
@@ -162,7 +197,10 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               key={key}
               onPress={() => setCurrentCalendarId(calendar.id)}
               style={{
-                backgroundColor: currentCalendarId === calendar.id ? theme.NEUTRAL[100] : theme.GRAY[300],
+                backgroundColor:
+                  currentCalendarId === calendar.id
+                    ? theme.NEUTRAL[100]
+                    : theme.GRAY[300],
                 padding: 12,
                 borderRadius: 8,
                 flexDirection: "row",
@@ -181,7 +219,8 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                 />
                 <Text
                   style={{
-                    color: currentCalendarId === calendar.id ? "#212224" : "white",
+                    color:
+                      currentCalendarId === calendar.id ? "#212224" : "white",
                     fontSize: 16,
                   }}
                 >
@@ -191,7 +230,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             </Button>
           ))}
           <Button
-            onPress={() => navigation.navigate('NewCalendar')}
+            onPress={() => navigation.navigate("NewCalendar")}
             style={{
               backgroundColor: theme.GRAY[500],
               padding: 12,
@@ -201,7 +240,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               marginRight: 20,
               gap: 8,
               borderWidth: 1,
-              borderColor: theme.GRAY[100]
+              borderColor: theme.GRAY[100],
             }}
           >
             <PlusIcon size={18} color={theme.NEUTRAL[300]} />
@@ -226,7 +265,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             paddingHorizontal: 25,
             paddingBottom: 15,
             borderBottomWidth: 1,
-            borderBottomColor: theme.NEUTRAL[800]
+            borderBottomColor: theme.NEUTRAL[800],
           }}
         >
           <Text style={{ color: "white", fontWeight: "600", fontSize: 18 }}>
@@ -236,7 +275,10 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             onPress={() =>
               navigation.navigate("EventDetails", {
                 calendars,
-                defaultCalendarId: currentCalendarId === "all" || !isCalendarWritable ? defaultCalendarId : currentCalendarId,
+                defaultCalendarId:
+                  currentCalendarId === "all" || !isCalendarWritable
+                    ? defaultCalendarId
+                    : currentCalendarId,
                 date: currentDate.toISOString(),
                 isEmpty: true,
               })
@@ -263,22 +305,30 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             Looks like a chill day, no events
           </Text>
         ) : (
-          <FlatList ItemSeparatorComponent={() => (
-            <View style={{ backgroundColor: theme.GRAY[200], height: 1 }} />
-          )} showsVerticalScrollIndicator={false} data={events} renderItem={({ item: event }) => (
-            <Swipeable onPress={() => handleEventDelete(event.id)} enabled={event.allowsModifications}>
-              <Event
-                details={event}
-                onPress={() =>
-                  navigation.navigate("EventDetails", {
-                    event,
-                    calendars,
-                    date: currentDate.toISOString(),
-                  })
-                }
-              />
-            </Swipeable>
-          )} />
+          <FlatList
+            ItemSeparatorComponent={() => (
+              <View style={{ backgroundColor: theme.GRAY[200], height: 1 }} />
+            )}
+            showsVerticalScrollIndicator={false}
+            data={events}
+            renderItem={({ item: event }) => (
+              <Swipeable
+                onPress={() => handleEventDelete(event.id)}
+                enabled={event.allowsModifications}
+              >
+                <Event
+                  details={event}
+                  onPress={() =>
+                    navigation.navigate("EventDetails", {
+                      event,
+                      calendars,
+                      date: currentDate.toISOString(),
+                    })
+                  }
+                />
+              </Swipeable>
+            )}
+          />
         )}
       </View>
     </Screen>
@@ -286,22 +336,32 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  title: { color: theme.NEUTRAL[200], fontWeight: "bold", fontSize: 30, textAlign: "center" },
-  date: { color: theme.NEUTRAL[400], fontWeight: "bold", fontSize: 21, textAlign: "center" },
+  title: {
+    color: theme.NEUTRAL[200],
+    fontWeight: "bold",
+    fontSize: 30,
+    textAlign: "center",
+  },
+  date: {
+    color: theme.NEUTRAL[400],
+    fontWeight: "bold",
+    fontSize: 21,
+    textAlign: "center",
+  },
   button: {
     paddingVertical: 14,
-    paddingHorizontal: 18
+    paddingHorizontal: 18,
   },
   eventsContainer: {
     paddingTop: 15,
     backgroundColor: "#151618",
     borderTopColor: "#1E1D1F",
     borderTopWidth: 1,
-    flex: 1
+    flex: 1,
   },
   horizontalSafeAreaPadding: {
-    paddingHorizontal: 20
-  }
+    paddingHorizontal: 20,
+  },
 });
 
 export default HomeScreen;

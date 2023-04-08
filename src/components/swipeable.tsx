@@ -1,28 +1,29 @@
-import theme from '@/styles/theme';
-import React from 'react';
-import { View } from 'react-native';
+import theme from "@/styles/theme";
+import React from "react";
+import { View } from "react-native";
 
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import Swipeable from "react-native-gesture-handler/Swipeable";
 import Button from "@/components/button";
-import { TrashIcon } from './icon';
+import { TrashIcon } from "./icon";
 
 const ListItem = ({ children, enabled, onPress }) => (
-  <Swipeable enabled={enabled} renderRightActions={() => (
-    <Button
-      onPress={onPress}
-      style={{
-        backgroundColor: '#ef4444',
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-        paddingHorizontal: 30,
-        paddingVertical: 20,
-      }}
-    >
-
-      {<TrashIcon size={26} color="white" />}
-
-    </Button>
-  )}>
+  <Swipeable
+    enabled={enabled}
+    renderRightActions={() => (
+      <Button
+        onPress={onPress}
+        style={{
+          backgroundColor: "#ef4444",
+          justifyContent: "center",
+          alignItems: "flex-end",
+          paddingHorizontal: 30,
+          paddingVertical: 20,
+        }}
+      >
+        {<TrashIcon size={26} color='white' />}
+      </Button>
+    )}
+  >
     <View
       style={{
         backgroundColor: theme.GRAY[400],

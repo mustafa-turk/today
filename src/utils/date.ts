@@ -42,12 +42,12 @@ export const timeBetweenDates = (
   return Math.round(difference / 60000);
 };
 
-export const getDayPlusHours = (date: Date, hours: number) => {
+export const getDayPlusHours = (date: Date | string, hours: number) => {
   const today = new Date(date);
   today.setHours(today.getHours() + hours);
   today.setMinutes(0);
   return today;
-}
+};
 
 function addZero(number: number): string | number {
   if (number < 10) {
@@ -61,18 +61,20 @@ export const getNextDay = (date: Date) => {
   nextDate.setDate(nextDate.getDate() + 1);
 
   return nextDate;
-}
+};
 
 export const getPreviousDay = (date: Date) => {
   const previousDay = new Date(date);
   previousDay.setDate(previousDay.getDate() - 1);
 
   return previousDay;
-}
+};
 
 export const isToday = (date: Date) => {
-  const today = new Date()
-  return date.getDate() == today.getDate() &&
+  const today = new Date();
+  return (
+    date.getDate() == today.getDate() &&
     date.getMonth() == today.getMonth() &&
     date.getFullYear() == today.getFullYear()
-}
+  );
+};
