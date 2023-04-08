@@ -48,6 +48,7 @@ export const getEvents = async (
       calendarTitle: find(cals, { id: event.calendarId }).title,
       color: find(cals, { id: event.calendarId }).color,
       title: event.title,
+      location: event.location,
       startDate: event.startDate,
       endDate: event.endDate,
       duration: date.timeBetweenDates(event.startDate, event.endDate),

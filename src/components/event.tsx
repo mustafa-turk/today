@@ -1,8 +1,15 @@
 import { View, Text, TouchableOpacity } from "react-native";
 
 import theme from "@/styles/theme";
+import { ClockIcon } from "./icon";
+import { EventType } from "@/utils/types";
 
-const Event = ({ details, onPress }) => {
+type Props = {
+  details: EventType;
+  onPress(): void;
+};
+
+const Event = ({ details, onPress }: Props) => {
   const colors = {
     title: theme.NEUTRAL[100],
     text: theme.NEUTRAL[300],
@@ -15,105 +22,57 @@ const Event = ({ details, onPress }) => {
       activeOpacity={0.8}
       onPress={onPress}
       style={{
-        padding: 20,
-        paddingHorizontal: 25,
+        margin: 20,
+        paddingHorizontal: 20,
+        borderLeftWidth: 3,
+        borderLeftColor: details.color,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 6,
-          marginBottom: 10,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: details.color,
-            width: 15,
-            height: 15,
-            borderRadius: 10,
-          }}
-        />
+      <View style={{ marginBottom: 2 }}>
         <Text
           style={{
-            color: colors.subText,
-            fontSize: 16,
+            color: details.color,
+            fontSize: 14,
             fontWeight: "600",
           }}
         >
           {details.calendarTitle}
         </Text>
       </View>
-      <View style={{ gap: 0 }}>
+      <View style={{ marginBottom: 2 }}>
         <Text
           style={{
             color: colors.title,
-            fontSize: 21,
+            fontSize: 19,
             fontWeight: "600",
           }}
         >
           {details.title}
         </Text>
-        <Text
-          style={{
-            color: theme.NEUTRAL[400],
-            fontSize: 19,
-            fontWeight: "500",
-          }}
-        >
-          {details.notes}
-        </Text>
       </View>
+
+      <Text
+        style={{
+          color: theme.NEUTRAL[400],
+          fontSize: 17,
+          fontWeight: "500",
+        }}
+      >
+        {details.location}
+      </Text>
 
       <View
         style={{
-          marginTop: 10,
+          marginTop: 15,
           flexDirection: "row",
-          gap: 30,
+          gap: 6,
+          alignItems: "center",
         }}
       >
-        <View>
-          <Text
-            style={{
-              color: colors.subText,
-              fontWeight: "600",
-              fontSize: 14,
-            }}
-          >
-            Start
-          </Text>
-          <Text
-            style={{
-              color: colors.text,
-              fontWeight: "500",
-              fontSize: 16,
-            }}
-          >
-            {details.startTime}
-          </Text>
-        </View>
-
-        <View>
-          <Text
-            style={{
-              color: colors.subText,
-              fontWeight: "600",
-              fontSize: 14,
-            }}
-          >
-            End
-          </Text>
-          <Text
-            style={{
-              color: colors.text,
-              fontWeight: "500",
-              fontSize: 16,
-            }}
-          >
-            {details.endTime}
-          </Text>
-        </View>
+        <ClockIcon color={colors.subText} size={14} />
+        <Text style={{ color: colors.subText, fontSize: 14 }}>
+          {details.startTime} - {details.endTime}
+        </Text>
       </View>
     </TouchableOpacity>
   );

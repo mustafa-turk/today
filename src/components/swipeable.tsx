@@ -13,7 +13,7 @@ const ListItem = ({ children, enabled, onPress }) => (
       <Button
         onPress={onPress}
         style={{
-          backgroundColor: "#ef4444",
+          backgroundColor: "#dc2626",
           justifyContent: "center",
           alignItems: "flex-end",
           paddingHorizontal: 30,

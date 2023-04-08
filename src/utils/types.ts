@@ -29,5 +29,7 @@ export type EventType = {
   startDate: Date | string;
   endDate: Date | string;
   notes: string;
+  location: string;
   allowsModifications: boolean;
+  calendarTitle: string;
 };

@@ -98,7 +98,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       <Button
         onPress={() => setCurrentDate(new Date())}
         style={{
-          backgroundColor: "#295EF2",
+          backgroundColor: date.isToday(currentDate)
+            ? theme.GRAY[300]
+            : "#295EF2",
           alignSelf: "center",
           marginBottom: 14,
           padding: 6,
@@ -247,7 +249,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         </View>
         {isEmpty(events) ? (
           <Text style={styles.eventsContainerEmptyMessage}>
-            Looks like a chill day, no events
+            Looks like a chill day
           </Text>
         ) : (
           <FlatList

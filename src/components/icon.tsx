@@ -17,3 +17,6 @@ export const ArrowRight = (props: IconProps) => (
 export const TrashIcon = (props: IconProps) => (
   <Feather {...props} name='trash' />
 );
+export const ClockIcon = (props: IconProps) => (
+  <Feather {...props} name='clock' />
+);

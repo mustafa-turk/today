@@ -59,6 +59,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         startDate: updatedEvent.startDate,
         endDate: updatedEvent.endDate,
         notes: updatedEvent.notes,
+        location: updatedEvent.location,
       });
     } else {
       await Calendar.updateEventAsync(updatedEvent.id, {
@@ -67,6 +68,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         endDate: updatedEvent.endDate,
         calendarId: updatedEvent.calendarId,
         notes: updatedEvent.notes,
+        location: updatedEvent.location,
       });
     }
     goBack();
@@ -83,6 +85,10 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
 
   const onTitleChange = (title: string) => {
     setUpdatedEvent({ ...updatedEvent, title });
+  };
+
+  const onLocationChange = (location: string) => {
+    setUpdatedEvent({ ...updatedEvent, location });
   };
 
   const onNotesChange = (notes: string) => {
@@ -169,6 +175,14 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             borderTopLeftRadius: 0,
             borderTopRightRadius: 0,
           }}
+        />
+
+        <TextInput
+          placeholder='Event Location'
+          onChangeText={onLocationChange}
+          value={updatedEvent.location}
+          editable={updatedEvent.allowsModifications}
+          style={{ marginTop: 20 }}
         />
       </View>
 
