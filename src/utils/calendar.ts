@@ -56,8 +56,8 @@ export const getEvents = async (
     }));
 };
 
-export const filterWritableCalendars = (calendars: CalendarType[]) => {
-  return calendars.filter((calendar) => calendar.allowsModifications);
+export const deleteEvent = async (id: string) => {
+  await Calendar.deleteEventAsync(id);
 };
 
 export const getDefaultCalendarId = async () => {
@@ -65,6 +65,6 @@ export const getDefaultCalendarId = async () => {
   return defaultCalendar.id;
 };
 
-export const deleteEvent = async (id) => {
-  await Calendar.deleteEventAsync(id);
+export const filterWritableCalendars = (calendars: CalendarType[]) => {
+  return calendars.filter((calendar) => calendar.allowsModifications);
 };

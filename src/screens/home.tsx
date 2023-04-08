@@ -168,17 +168,11 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <Button
             onPress={() => setCurrentCalendarId("all")}
             style={{
+              ...styles.allButton,
               backgroundColor:
                 currentCalendarId === "all"
                   ? theme.NEUTRAL[100]
                   : theme.GRAY[300],
-              padding: 12,
-              paddingHorizontal: 20,
-              borderRadius: 8,
-              flexDirection: "row",
-              marginRight: 10,
-              gap: 8,
-              marginLeft: 20,
             }}
           >
             <>
@@ -197,80 +191,43 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               key={key}
               onPress={() => setCurrentCalendarId(calendar.id)}
               style={{
+                ...styles.calenderButton,
                 backgroundColor:
                   currentCalendarId === calendar.id
                     ? theme.NEUTRAL[100]
                     : theme.GRAY[300],
-                padding: 12,
-                borderRadius: 8,
-                flexDirection: "row",
-                marginRight: 10,
-                gap: 8,
               }}
             >
-              <>
-                <View
-                  style={{
-                    backgroundColor: calendar.color,
-                    width: 20,
-                    height: 20,
-                    borderRadius: 6,
-                  }}
-                />
-                <Text
-                  style={{
-                    color:
-                      currentCalendarId === calendar.id ? "#212224" : "white",
-                    fontSize: 16,
-                  }}
-                >
-                  {calendar.title}
-                </Text>
-              </>
+              <View
+                style={{
+                  ...styles.calenderIcon,
+                  backgroundColor: calendar.color,
+                }}
+              />
+              <Text
+                style={{
+                  color:
+                    currentCalendarId === calendar.id ? "#212224" : "white",
+                  fontSize: 16,
+                }}
+              >
+                {calendar.title}
+              </Text>
             </Button>
           ))}
           <Button
             onPress={() => navigation.navigate("NewCalendar")}
-            style={{
-              backgroundColor: theme.GRAY[500],
-              padding: 12,
-              paddingRight: 16,
-              borderRadius: 8,
-              flexDirection: "row",
-              marginRight: 20,
-              gap: 8,
-              borderWidth: 1,
-              borderColor: theme.GRAY[100],
-            }}
+            style={styles.createCalendarButton}
           >
             <PlusIcon size={18} color={theme.NEUTRAL[300]} />
-            <Text
-              style={{
-                color: "white",
-                fontSize: 16,
-              }}
-            >
-              New Calendar
-            </Text>
+            <Text style={styles.createCalendarButtonText}>New Calendar</Text>
           </Button>
         </ScrollView>
       </View>
 
       <View style={styles.eventsContainer}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 25,
-            paddingBottom: 15,
-            borderBottomWidth: 1,
-            borderBottomColor: theme.NEUTRAL[800],
-          }}
-        >
-          <Text style={{ color: "white", fontWeight: "600", fontSize: 18 }}>
-            {eventsLabel}
-          </Text>
+        <View style={styles.eventsContainerHeader}>
+          <Text style={styles.eventsContainerHeaderLabel}>{eventsLabel}</Text>
           <Button
             onPress={() =>
               navigation.navigate("EventDetails", {
@@ -283,31 +240,19 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                 isEmpty: true,
               })
             }
-            style={{
-              backgroundColor: theme.NEUTRAL[100],
-              paddingHorizontal: 24,
-              paddingVertical: 6,
-              borderRadius: 20,
-            }}
+            style={styles.eventsContainerHeaderButton}
           >
             <PlusIcon size={21} color={theme.NEUTRAL[900]} />
           </Button>
         </View>
         {isEmpty(events) ? (
-          <Text
-            style={{
-              color: theme.NEUTRAL[400],
-              textAlign: "center",
-              marginTop: 40,
-              fontSize: 16,
-            }}
-          >
+          <Text style={styles.eventsContainerEmptyMessage}>
             Looks like a chill day, no events
           </Text>
         ) : (
           <FlatList
             ItemSeparatorComponent={() => (
-              <View style={{ backgroundColor: theme.GRAY[200], height: 1 }} />
+              <View style={styles.eventsListSeperator} />
             )}
             showsVerticalScrollIndicator={false}
             data={events}
@@ -352,6 +297,42 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 18,
   },
+  allButton: {
+    padding: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    flexDirection: "row",
+    marginRight: 10,
+    gap: 8,
+    marginLeft: 20,
+  },
+  calenderButton: {
+    padding: 12,
+    borderRadius: 8,
+    flexDirection: "row",
+    marginRight: 10,
+    gap: 8,
+  },
+  calenderIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 6,
+  },
+  createCalendarButton: {
+    backgroundColor: theme.GRAY[500],
+    padding: 12,
+    paddingRight: 16,
+    borderRadius: 8,
+    flexDirection: "row",
+    marginRight: 20,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: theme.GRAY[100],
+  },
+  createCalendarButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
   eventsContainer: {
     paddingTop: 15,
     backgroundColor: "#151618",
@@ -359,6 +340,33 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     flex: 1,
   },
+  eventsContainerHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 25,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.NEUTRAL[800],
+  },
+  eventsContainerHeaderLabel: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 18,
+  },
+  eventsContainerHeaderButton: {
+    backgroundColor: theme.NEUTRAL[100],
+    paddingHorizontal: 24,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  eventsContainerEmptyMessage: {
+    color: theme.NEUTRAL[400],
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 16,
+  },
+  eventsListSeperator: { backgroundColor: theme.GRAY[200], height: 1 },
   horizontalSafeAreaPadding: {
     paddingHorizontal: 20,
   },
