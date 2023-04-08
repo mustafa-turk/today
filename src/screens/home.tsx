@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   eventsContainer: {
     paddingTop: 15,
-    backgroundColor: "#151618",
+    backgroundColor: theme.GRAY[400],
     borderTopColor: "#1E1D1F",
     borderTopWidth: 1,
     flex: 1,

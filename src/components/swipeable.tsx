@@ -20,7 +20,7 @@ const ListItem = ({ children, enabled, onPress }) => (
           paddingVertical: 20,
         }}
       >
-        {<TrashIcon size={26} color='white' />}
+        <TrashIcon size={26} color='white' />
       </Button>
     )}
   >
