@@ -14,7 +14,7 @@ export const getCalendars = async () => {
     }))
 }
 
-export const getEvents = async (cals, currentDate: Date, currentCalendarId: string) => {
+export const getEvents = async (cals: CalendarType[], currentDate: Date, currentCalendarId: string) => {
   const events = cals.map((cal) =>
     Calendar.getEventsAsync(
       [cal.id],
@@ -55,3 +55,7 @@ export const getDefaultCalendarId = async () => {
   const defaultCalendar = await Calendar.getDefaultCalendarAsync();
   return defaultCalendar.id;
 }
+
+export const deleteEvent = async (id) => {
+  await Calendar.deleteEventAsync(id);
+};

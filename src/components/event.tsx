@@ -15,8 +15,6 @@ const Event = ({ details, onPress }) => {
       activeOpacity={0.8}
       onPress={onPress}
       style={{
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
         padding: 20,
         paddingHorizontal: 25
       }}

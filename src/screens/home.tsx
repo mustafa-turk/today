@@ -4,6 +4,7 @@ import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import {
+  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,6 +14,7 @@ import {
 import Event from "@/components/event";
 import Button from "@/components/button";
 import Screen from "@/components/screen";
+import Swipeable from "@/components/swipeable";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
 import { find, isEmpty } from "lodash";
 
@@ -76,6 +78,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       setEvents(evs);
     })();
   }, [currentDate, currentCalendarId]);
+
+  const handleEventDelete = async (id: string) => {
+    await calendar.deleteEvent(id);
+    const evs = await calendar.getEvents(calendars, currentDate, currentCalendarId);
+    setEvents(evs);
+  }
 
   const eventsLabel = `${events.length} ${events.length === 1 ? "event" : "events"}`;
 
@@ -255,26 +263,22 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             Looks like a chill day, no events
           </Text>
         ) : (
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={styles.eventsList}
-          >
-            <View>
-              {events?.map((event, index) => (
-                <Event
-                  details={event}
-                  key={index}
-                  onPress={() =>
-                    navigation.navigate("EventDetails", {
-                      event,
-                      calendars,
-                      date: currentDate.toISOString(),
-                    })
-                  }
-                />
-              ))}
-            </View>
-          </ScrollView>
+          <FlatList ItemSeparatorComponent={() => (
+            <View style={{ backgroundColor: theme.GRAY[200], height: 1 }} />
+          )} showsVerticalScrollIndicator={false} data={events} renderItem={({ item: event }) => (
+            <Swipeable onPress={() => handleEventDelete(event.id)} enabled={event.allowsModifications}>
+              <Event
+                details={event}
+                onPress={() =>
+                  navigation.navigate("EventDetails", {
+                    event,
+                    calendars,
+                    date: currentDate.toISOString(),
+                  })
+                }
+              />
+            </Swipeable>
+          )} />
         )}
       </View>
     </Screen>
@@ -294,9 +298,6 @@ const styles = StyleSheet.create({
     borderTopColor: "#1E1D1F",
     borderTopWidth: 1,
     flex: 1
-  },
-  eventsList: {
-    marginBottom: 30,
   },
   horizontalSafeAreaPadding: {
     paddingHorizontal: 20

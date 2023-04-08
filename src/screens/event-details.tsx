@@ -22,7 +22,6 @@ import * as calendar from "@/utils/calendar";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { EventType, RootStackParamList } from "@/utils/types";
-import { find } from "lodash";
 
 type EventDetailsScreenRouteProp = RouteProp<RootStackParamList, 'EventDetails'>;
 
