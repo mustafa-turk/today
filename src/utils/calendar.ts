@@ -56,6 +56,8 @@ export const getEvents = async (
       duration: date.timeBetweenDates(event.startDate, event.endDate),
       startTime: date.getTimeFromString(event.startDate),
       endTime: date.getTimeFromString(event.endDate),
+      fullDay: date.timeBetweenDates(event.startDate, event.endDate),
+      isEventAllDay: date.isEventFullDay(event.startDate, event.endDate),
     }));
 };
 

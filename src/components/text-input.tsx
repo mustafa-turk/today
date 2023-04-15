@@ -14,15 +14,15 @@ function CustomTextInput({
       style={{
         borderRadius: 10,
         padding: 14,
-        backgroundColor: theme.GRAY[300],
+        backgroundColor: theme.NEUTRAL[900],
         borderWidth: 1,
-        borderColor: theme.GRAY[100],
+        borderColor: theme.NEUTRAL[800],
         fontSize: 18,
         color: "white",
         ...style,
       }}
       placeholder={placeholder}
-      placeholderTextColor='#707d8a'
+      placeholderTextColor={theme.NEUTRAL[400]}
       onChangeText={onChangeText}
       value={value}
       autoCorrect={false}

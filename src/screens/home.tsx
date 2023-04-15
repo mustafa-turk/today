@@ -101,7 +101,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         onPress={() => setCurrentDate(new Date())}
         style={{
           backgroundColor: date.isToday(currentDate)
-            ? theme.GRAY[300]
+            ? theme.NEUTRAL[900]
             : "#295EF2",
           alignSelf: "center",
           marginBottom: 14,
@@ -153,17 +153,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           marginBottom: 20,
         }}
       >
-        <Text
-          style={{
-            color: "white",
-            fontWeight: "600",
-            fontSize: 18,
-            marginBottom: 8,
-            ...styles.horizontalSafeAreaPadding,
-          }}
-        >
-          {translator.t("calendars")}
-        </Text>
         <ScrollView
           showsHorizontalScrollIndicator={false}
           horizontal
@@ -178,7 +167,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               backgroundColor:
                 currentCalendarId === "all"
                   ? theme.NEUTRAL[100]
-                  : theme.GRAY[500],
+                  : theme.NEUTRAL[950],
             }}
           >
             <>
@@ -201,7 +190,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                 backgroundColor:
                   currentCalendarId === calendar.id
                     ? theme.NEUTRAL[100]
-                    : theme.GRAY[500],
+                    : theme.NEUTRAL[950],
               }}
             >
               <View
@@ -270,6 +259,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                 enabled={event.allowsModifications}
               >
                 <Event
+                  disabled={!event.allowsModifications}
                   details={event}
                   onPress={() =>
                     navigation.navigate("EventDetails", {
@@ -314,7 +304,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginLeft: 20,
     borderWidth: 1,
-    borderColor: theme.GRAY[100],
+    borderColor: theme.NEUTRAL[800],
   },
   calenderButton: {
     padding: 12,
@@ -323,7 +313,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     gap: 8,
     borderWidth: 1,
-    borderColor: theme.GRAY[100],
+    borderColor: theme.NEUTRAL[800],
   },
   calenderIcon: {
     width: 20,
@@ -331,7 +321,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   createCalendarButton: {
-    backgroundColor: theme.GRAY[500],
+    backgroundColor: theme.NEUTRAL[950],
     padding: 12,
     paddingRight: 16,
     borderRadius: 8,
@@ -339,7 +329,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
     gap: 8,
     borderWidth: 1,
-    borderColor: theme.GRAY[100],
+    borderColor: theme.NEUTRAL[800],
   },
   createCalendarButtonText: {
     color: "white",
@@ -347,7 +337,7 @@ const styles = StyleSheet.create({
   },
   eventsContainer: {
     paddingTop: 15,
-    backgroundColor: theme.GRAY[500],
+    backgroundColor: theme.NEUTRAL[950],
     borderTopColor: "#1E1D1F",
     borderTopWidth: 1,
     flex: 1,
@@ -359,7 +349,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: theme.NEUTRAL[800],
+    borderBottomColor: theme.NEUTRAL[900],
   },
   eventsContainerHeaderLabel: {
     color: "white",
@@ -378,7 +368,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     fontSize: 16,
   },
-  eventsListSeperator: { backgroundColor: theme.GRAY[200], height: 1 },
+  eventsListSeperator: { backgroundColor: theme.NEUTRAL[900], height: 1 },
   horizontalSafeAreaPadding: {
     paddingHorizontal: 20,
   },

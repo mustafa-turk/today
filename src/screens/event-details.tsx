@@ -102,7 +102,9 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
   ) => {
     const currentDate = new Date(date);
     const hours = new Date(selectedDate).getHours();
+    const minutes = new Date(selectedDate).getMinutes();
     currentDate.setHours(hours);
+    currentDate.setMinutes(minutes);
 
     if (event.type !== "dismissed") {
       setUpdatedEvent({
@@ -115,7 +117,9 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
   const onEndTimeChange = (event: DateTimePickerEvent, selectedDate: Date) => {
     const currentDate = new Date(date);
     const hours = new Date(selectedDate).getHours();
+    const minutes = new Date(selectedDate).getMinutes();
     currentDate.setHours(hours);
+    currentDate.setMinutes(minutes);
 
     if (event.type !== "dismissed") {
       setUpdatedEvent({
@@ -145,20 +149,6 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         <TouchableOpacity onPress={onCancel}>
           <Text style={styles.cancel}>{translator.t("cancel")}</Text>
         </TouchableOpacity>
-
-        {!updatedEvent.allowsModifications && (
-          <View
-            style={{
-              backgroundColor: "#ef4444",
-              alignSelf: "center",
-              paddingHorizontal: 12,
-              paddingVertical: 6,
-              borderRadius: 20,
-            }}
-          >
-            <Text style={{ color: "white" }}>Read-only</Text>
-          </View>
-        )}
 
         <TouchableOpacity onPress={onSave}>
           <Text style={{ ...styles.cancel, color: "white" }}>
@@ -219,7 +209,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
                 backgroundColor:
                   calendar.id === updatedEvent.calendarId
                     ? theme.NEUTRAL[100]
-                    : theme.GRAY[300],
+                    : theme.NEUTRAL[900],
               }}
             >
               <View
@@ -234,7 +224,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
                 style={{
                   color:
                     calendar.id === updatedEvent.calendarId
-                      ? theme.GRAY[500]
+                      ? theme.NEUTRAL[950]
                       : "white",
                   fontSize: 16,
                   fontWeight: "500",
@@ -250,7 +240,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
       <View>
         <View
           style={{
-            backgroundColor: theme.GRAY[300],
+            backgroundColor: theme.NEUTRAL[900],
             borderRadius: 10,
             paddingHorizontal: 16,
             paddingVertical: 10,
@@ -258,13 +248,13 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             justifyContent: "space-between",
             alignItems: "center",
             borderWidth: 1,
-            borderColor: theme.GRAY[100],
+            borderColor: theme.NEUTRAL[800],
             borderBottomWidth: 0,
             borderBottomLeftRadius: 0,
             borderBottomRightRadius: 0,
           }}
         >
-          <Text style={{ color: "#707d8a", fontSize: 18 }}>
+          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>
             {translator.t("starts_at")}
           </Text>
           <DateTimePicker
@@ -281,7 +271,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
 
         <View
           style={{
-            backgroundColor: theme.GRAY[300],
+            backgroundColor: theme.NEUTRAL[900],
             borderRadius: 10,
             paddingHorizontal: 16,
             paddingVertical: 10,
@@ -289,12 +279,12 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
             justifyContent: "space-between",
             alignItems: "center",
             borderWidth: 1,
-            borderColor: theme.GRAY[100],
+            borderColor: theme.NEUTRAL[800],
             borderTopLeftRadius: 0,
             borderTopRightRadius: 0,
           }}
         >
-          <Text style={{ color: "#707d8a", fontSize: 18 }}>
+          <Text style={{ color: theme.NEUTRAL[400], fontSize: 18 }}>
             {translator.t("ends_at")}
           </Text>
           <DateTimePicker
@@ -326,7 +316,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.GRAY[500],
+    backgroundColor: theme.NEUTRAL[950],
     padding: 20,
   },
   cancel: {
@@ -340,7 +330,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     borderWidth: 1,
-    borderColor: theme.GRAY[100],
+    borderColor: theme.NEUTRAL[800],
   },
   calenderIcon: {
     width: 20,

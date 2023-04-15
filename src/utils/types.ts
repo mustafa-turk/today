@@ -32,4 +32,5 @@ export type EventType = {
   location: string;
   allowsModifications: boolean;
   calendarTitle: string;
+  isEventAllDay: boolean;
 };

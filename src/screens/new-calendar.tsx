@@ -52,7 +52,13 @@ const NewCalendar: React.FC<Props> = (props) => {
         value={title}
         style={{}}
       />
-      <View style={{ gap: 6, flexDirection: "row", marginTop: 20 }}>
+      <View
+        style={{
+          gap: 8,
+          flexDirection: "row",
+          marginTop: 20,
+        }}
+      >
         {CALENDAR_COLORS.map((c) => (
           <Button
             key={c}

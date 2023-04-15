@@ -82,3 +82,15 @@ export const isToday = (date: Date) => {
     date.getFullYear() == today.getFullYear()
   );
 };
+
+export const isEventFullDay = (
+  startTime: string | Date,
+  endTime: string | Date
+) => {
+  const FULL_DAY_MINUTES = 1440;
+
+  const minutesBetweenTimes = timeBetweenDates(startTime, endTime);
+  const isEventFullDay = minutesBetweenTimes === FULL_DAY_MINUTES;
+
+  return isEventFullDay;
+};

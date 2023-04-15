@@ -4,12 +4,15 @@ import theme from "@/styles/theme";
 import { ClockIcon } from "./icon";
 import { EventType } from "@/utils/types";
 
+import translator from "@/utils/i18n";
+
 type Props = {
   details: EventType;
   onPress(): void;
+  disabled: boolean;
 };
 
-const Event = ({ details, onPress }: Props) => {
+const Event = ({ disabled, details, onPress }: Props) => {
   const colors = {
     title: theme.NEUTRAL[100],
     text: theme.NEUTRAL[300],
@@ -21,6 +24,7 @@ const Event = ({ details, onPress }: Props) => {
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
+      disabled={disabled}
       style={{
         margin: 20,
         paddingHorizontal: 20,
@@ -71,7 +75,9 @@ const Event = ({ details, onPress }: Props) => {
       >
         <ClockIcon color={colors.subText} size={14} />
         <Text style={{ color: colors.subText, fontSize: 14 }}>
-          {details.startTime} - {details.endTime}
+          {details.isEventAllDay
+            ? translator.t("full_day")
+            : `${details.startTime} - ${details.endTime}`}
         </Text>
       </View>
     </TouchableOpacity>

@@ -15,5 +15,6 @@
   "starts_at": "Starts at",
   "ends_at": "Ends at",
   "calendar_name": "Calendar Name",
-  "delete_event": "Delete Event"
+  "delete_event": "Delete Event",
+  "full_day": "Full day"
 }
