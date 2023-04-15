@@ -20,10 +20,11 @@ import * as calendar from "@/utils/calendar";
 import theme from "@/styles/theme";
 
 import { CalendarType, EventType, RootStackParamList } from "@/utils/types";
+import { SCREENS } from "@/utils/constants";
 
-type HomeScreenRouteProp = RouteProp<RootStackParamList, "Home">;
+type HomeScreenRouteProp = RouteProp<RootStackParamList, "HOME">;
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "HOME">;
 
 type Props = {
   route: HomeScreenRouteProp;
@@ -100,9 +101,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       <Button
         onPress={() => setCurrentDate(new Date())}
         style={{
-          backgroundColor: date.isToday(currentDate)
-            ? theme.NEUTRAL[900]
-            : "#295EF2",
+          backgroundColor: theme.BLUE,
           alignSelf: "center",
           marginBottom: 14,
           padding: 6,
@@ -211,7 +210,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             </Button>
           ))}
           <Button
-            onPress={() => navigation.navigate("NewCalendar")}
+            onPress={() => navigation.navigate(SCREENS.NEW_CALENDAR)}
             style={styles.createCalendarButton}
           >
             <PlusIcon size={18} color={theme.NEUTRAL[300]} />
@@ -227,7 +226,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <Text style={styles.eventsContainerHeaderLabel}>{eventsLabel}</Text>
           <Button
             onPress={() =>
-              navigation.navigate("EventDetails", {
+              navigation.navigate(SCREENS.EVENT_DETAILS, {
                 calendars,
                 defaultCalendarId:
                   currentCalendarId === "all" || !isCalendarWritable
@@ -262,7 +261,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                   disabled={!event.allowsModifications}
                   details={event}
                   onPress={() =>
-                    navigation.navigate("EventDetails", {
+                    navigation.navigate(SCREENS.EVENT_DETAILS, {
                       event,
                       calendars,
                       date: currentDate.toISOString(),
@@ -280,13 +279,13 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   title: {
-    color: theme.NEUTRAL[200],
+    color: theme.NEUTRAL[100],
     fontWeight: "bold",
     fontSize: 30,
     textAlign: "center",
   },
   date: {
-    color: theme.NEUTRAL[400],
+    color: theme.NEUTRAL[300],
     fontWeight: "bold",
     fontSize: 21,
     textAlign: "center",

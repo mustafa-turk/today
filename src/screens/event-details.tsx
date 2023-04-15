@@ -18,15 +18,16 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { EventType, RootStackParamList } from "@/utils/types";
 import Button from "@/components/button";
+import { SCREENS } from "@/utils/constants";
 
 type EventDetailsScreenRouteProp = RouteProp<
   RootStackParamList,
-  "EventDetails"
+  "EVENT_DETAILS"
 >;
 
 type EventDetailsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "EventDetails"
+  "EVENT_DETAILS"
 >;
 
 type Props = {
@@ -50,7 +51,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
   >(isEmpty ? emptyEvent : event);
 
   const goBack = () => {
-    navigation.navigate("Home", { date });
+    navigation.navigate(SCREENS.HOME, { date });
   };
 
   const onSave = async () => {

@@ -16,7 +16,7 @@ import translator from "@/utils/i18n";
 
 type NewCalendarScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "NewCalendar"
+  "NEW_CALENDAR"
 >;
 
 type Props = {

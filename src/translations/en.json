@@ -16,5 +16,12 @@
   "ends_at": "Ends at",
   "calendar_name": "Calendar Name",
   "delete_event": "Delete Event",
-  "full_day": "Full day"
+  "full_day": "Full day",
+  "tagline": "A minimalistic calendar app that lets you focus on what is important for today.",
+  "get_started": "Get Started",
+  "access": "Access",
+  "allow_access": "Please allow Today to access your iOS calendars.",
+  "personal_data": "All of your personal data is kept private.",
+  "private_info": "Your calendars are kept on your device and are not shared with anyone.",
+  "allow": "Allow"
 }

@@ -16,5 +16,12 @@
   "ends_at": "Fini à",
   "calendar_name": "Nom du calendrier",
   "delete_event": "Supprimer l'événement",
-  "full_day": "Journée complète"
+  "full_day": "Journée complète",
+  "tagline": "Une application de calendrier minimaliste qui vous permet de vous concentrer sur ce qui est important pour aujourd'hui.",
+  "get_started": "Get Started",
+  "access": "Commencer",
+  "allow_access": "Veuillez autoriser Today à accéder à vos calendriers iOS.",
+  "personal_data": "Toutes vos données personnelles sont gardées privées.",
+  "private_info": "Vos calendriers sont conservés sur votre appareil et ne sont partagés avec personne.",
+  "allow": "Permettre"
 }

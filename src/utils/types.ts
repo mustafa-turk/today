@@ -1,14 +1,17 @@
+import { SCREENS } from "./constants";
+
 export type RootStackParamList = {
-  Home: { date: Date | string } | undefined;
-  GrantAccess: undefined;
-  EventDetails: {
+  [SCREENS.HOME]: { date: Date | string } | undefined;
+  [SCREENS.GRANT_ACCESS]: undefined;
+  [SCREENS.EVENT_DETAILS]: {
     defaultCalendarId?: string;
     event?: EventType;
     date: string;
     calendars: CalendarType[];
     isEmpty?: boolean;
   };
-  NewCalendar: undefined;
+  [SCREENS.NEW_CALENDAR]: undefined;
+  [SCREENS.GET_STARTED]: undefined;
 };
 
 export type CalendarType = {

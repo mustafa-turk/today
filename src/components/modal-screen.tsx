@@ -3,6 +3,7 @@ import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import translator from "@/utils/i18n";
+import { SCREENS } from "@/utils/constants";
 
 type Props = {
   children: JSX.Element | JSX.Element[];
@@ -18,7 +19,7 @@ const ModalScreen: React.FC<Props> = ({
   onSave,
 }) => {
   const goBack = () => {
-    navigation.navigate("Home");
+    navigation.navigate(SCREENS.HOME);
   };
 
   const handleSave = async () => {

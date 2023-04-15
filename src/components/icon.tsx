@@ -1,4 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
+import Oct from "@expo/vector-icons/Octicons";
 
 type IconProps = {
   color: string;
@@ -19,4 +20,7 @@ export const TrashIcon = (props: IconProps) => (
 );
 export const ClockIcon = (props: IconProps) => (
   <Feather {...props} name='clock' />
+);
+export const ShieldIcon = (props: IconProps) => (
+  <Oct {...props} name='shield-check' />
 );
