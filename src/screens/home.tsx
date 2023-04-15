@@ -43,6 +43,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     React.useCallback(() => {
       if (route.params?.date) {
         setCurrentDate(new Date(route.params?.date));
+        setCurrentCalendarId("all");
       }
     }, [route.params?.date])
   );
