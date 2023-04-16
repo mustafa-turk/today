@@ -1,8 +1,13 @@
 import * as Localization from "expo-localization";
 import { capitalize } from "lodash";
+import { SUPPORTED_LANGS } from "./constants";
 
 export const getDay = (date: Date) => {
-  const day = new Intl.DateTimeFormat(Localization.locale, {
+  const lang =
+    Localization.locale === SUPPORTED_LANGS.FR
+      ? SUPPORTED_LANGS.FR
+      : SUPPORTED_LANGS.EN;
+  const day = new Intl.DateTimeFormat(lang, {
     weekday: "long",
   }).format(date);
 
