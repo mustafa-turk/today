@@ -8,10 +8,12 @@
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "simulator": true
       }
     },
     "preview": {
+      "developmentClient": true,
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium",
