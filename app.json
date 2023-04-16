@@ -3,7 +3,7 @@
     "name": "Today",
     "slug": "today",
     "description": "A minimalistic calendar application.",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -11,7 +11,7 @@
       [
         "expo-calendar",
         {
-          "calendarPermission": "The app needs to access your calendar."
+          "calendarPermission": "$(PRODUCT_NAME) needs access to your calendars to display events and create new ones."
         }
       ],
       "expo-localization"
@@ -25,8 +25,8 @@
     "ios": {
       "supportsTablet": false,
       "infoPlist": {
-        "NSCalendarsUsageDescription": "The app needs to access your calendar.",
-        "NSRemindersUsageDescription": "Allow $(PRODUCT_NAME) to access your reminders"
+        "NSCalendarsUsageDescription": "$(PRODUCT_NAME) needs access to your calendars to display events and create new ones.",
+        "NSRemindersUsageDescription": "$(PRODUCT_NAME) needs access to your reminders to display reminders and create new ones."
       },
       "bundleIdentifier": "com.mustafaturk.today"
     },
