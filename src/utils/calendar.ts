@@ -15,6 +15,9 @@ export const getCalendars = async () => {
   return calendars
     .filter((calendar) => calendar.title !== "Birthdays")
     .filter((calendar) => isCalendarNameValid(calendar.title))
+    .sort((calendarA, calendarB) =>
+      calendarA.title.localeCompare(calendarB.title)
+    )
     .map((calendar) => ({
       allowsModifications: calendar.allowsModifications,
       title: calendar.title,
