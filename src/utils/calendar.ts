@@ -3,12 +3,18 @@ import * as date from "@/utils/date";
 import { find, flatten } from "lodash";
 import { CalendarType } from "./types";
 
+export const isCalendarNameValid = (name: string) => {
+  const regex = /^[a-zA-ZÀ-ÿ-. ]*$/;
+  return regex.test(name);
+};
+
 export const getCalendars = async () => {
   const calendars = await Calendar.getCalendarsAsync(
     Calendar.EntityTypes.EVENT
   );
   return calendars
     .filter((calendar) => calendar.title !== "Birthdays")
+    .filter((calendar) => isCalendarNameValid(calendar.title))
     .map((calendar) => ({
       allowsModifications: calendar.allowsModifications,
       title: calendar.title,
