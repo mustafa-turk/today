@@ -1,6 +1,12 @@
 import * as React from "react";
 import * as Calendar from "expo-calendar";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -141,6 +147,8 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
     <View style={styles.container}>
       <View
         style={{
+          ...styles.horizontalSafeAreaPadding,
+          marginTop: 20,
           marginBottom: 30,
           flexDirection: "row",
           justifyContent: "space-between",
@@ -158,7 +166,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={{ marginBottom: 20 }}>
+      <View style={{ ...styles.horizontalSafeAreaPadding, marginBottom: 20 }}>
         <TextInput
           placeholder={translator.t("event_title")}
           onChangeText={onTitleChange}
@@ -192,53 +200,58 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
       </View>
 
       {isEmpty && (
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 10,
-            flexWrap: "wrap",
-            marginBottom: 20,
-          }}
-        >
-          {calendar.filterWritableCalendars(calendars).map((calendar, key) => (
-            <Button
-              key={key}
-              onPress={() => onCalendarPress(calendar.id)}
-              style={{
-                ...styles.calenderButton,
-                borderRadius: 10,
-                backgroundColor:
-                  calendar.id === updatedEvent.calendarId
-                    ? theme.NEUTRAL[100]
-                    : theme.NEUTRAL[900],
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: calendar.color,
-                  width: 20,
-                  height: 20,
-                  borderRadius: 6,
-                }}
-              />
-              <Text
-                style={{
-                  color:
-                    calendar.id === updatedEvent.calendarId
-                      ? theme.NEUTRAL[950]
-                      : "white",
-                  fontSize: 16,
-                  fontWeight: "500",
-                }}
-              >
-                {calendar.title}
-              </Text>
-            </Button>
-          ))}
+        <View>
+          <ScrollView
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            style={{
+              marginBottom: 20,
+              paddingLeft: 20,
+            }}
+          >
+            {calendar
+              .filterWritableCalendars(calendars)
+              .map((calendar, key) => (
+                <Button
+                  key={key}
+                  onPress={() => onCalendarPress(calendar.id)}
+                  style={{
+                    ...styles.calenderButton,
+                    borderRadius: 10,
+                    marginRight: 10,
+                    backgroundColor:
+                      calendar.id === updatedEvent.calendarId
+                        ? theme.NEUTRAL[100]
+                        : theme.NEUTRAL[900],
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: calendar.color,
+                      width: 20,
+                      height: 20,
+                      borderRadius: 6,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color:
+                        calendar.id === updatedEvent.calendarId
+                          ? theme.NEUTRAL[950]
+                          : "white",
+                      fontSize: 16,
+                      fontWeight: "500",
+                    }}
+                  >
+                    {calendar.title}
+                  </Text>
+                </Button>
+              ))}
+          </ScrollView>
         </View>
       )}
 
-      <View>
+      <View style={{ ...styles.horizontalSafeAreaPadding }}>
         <View
           style={{
             backgroundColor: theme.NEUTRAL[900],
@@ -318,7 +331,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.NEUTRAL[950],
-    padding: 20,
   },
   cancel: {
     color: "#ef4444",
@@ -337,6 +349,9 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 6,
+  },
+  horizontalSafeAreaPadding: {
+    paddingHorizontal: 20,
   },
 });
 
