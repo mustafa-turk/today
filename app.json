@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Today",
+    "name": "Calendio",
     "slug": "today",
     "description": "A minimalistic calendar application.",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
