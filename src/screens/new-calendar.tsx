@@ -69,7 +69,7 @@ const NewCalendar: React.FC<Props> = (props) => {
               width: 35,
               height: 35,
               borderWidth: 2,
-              borderColor: color === c ? theme.NEUTRAL[200] : "transparent",
+              borderColor: color === c ? theme.NEUTRAL[100] : "transparent",
               padding: 4,
             }}
           />

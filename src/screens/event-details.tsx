@@ -219,10 +219,11 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
                     ...styles.calenderButton,
                     borderRadius: 10,
                     marginRight: 10,
-                    backgroundColor:
+                    backgroundColor: theme.NEUTRAL[900],
+                    borderColor:
                       calendar.id === updatedEvent.calendarId
-                        ? theme.NEUTRAL[100]
-                        : theme.NEUTRAL[900],
+                        ? calendar.color
+                        : theme.NEUTRAL[800],
                   }}
                 >
                   <View
@@ -235,10 +236,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
                   />
                   <Text
                     style={{
-                      color:
-                        calendar.id === updatedEvent.calendarId
-                          ? theme.NEUTRAL[950]
-                          : "white",
+                      color: "white",
                       fontSize: 16,
                       fontWeight: "500",
                     }}
@@ -343,7 +341,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     borderWidth: 1,
-    borderColor: theme.NEUTRAL[800],
   },
   calenderIcon: {
     width: 20,

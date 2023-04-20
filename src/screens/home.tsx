@@ -175,6 +175,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                 style={{
                   color: currentCalendarId === "all" ? "#212224" : "white",
                   fontSize: 16,
+                  fontWeight: "500",
                 }}
               >
                 {translator.t("all")}
@@ -204,6 +205,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                   color:
                     currentCalendarId === calendar.id ? "#212224" : "white",
                   fontSize: 16,
+                  fontWeight: "500",
                 }}
               >
                 {calendar.title}
@@ -334,6 +336,7 @@ const styles = StyleSheet.create({
   createCalendarButtonText: {
     color: "white",
     fontSize: 16,
+    fontWeight: "500",
   },
   eventsContainer: {
     paddingTop: 15,
