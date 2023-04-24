@@ -167,45 +167,67 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
       </View>
 
       <View style={{ ...styles.horizontalSafeAreaPadding, marginBottom: 20 }}>
-        <TextInput
-          placeholder={translator.t("event_title")}
-          onChangeText={onTitleChange}
-          value={updatedEvent.title}
-          editable={updatedEvent.allowsModifications}
-          style={{
-            borderBottomWidth: 0,
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-          }}
-        />
+        <View style={{ marginBottom: 20 }}>
+          <Text
+            style={{
+              color: theme.NEUTRAL[200],
+              fontSize: 16,
+              fontWeight: "500",
+              marginBottom: 10,
+            }}
+          >
+            {translator.t("title")}
+          </Text>
+          <TextInput
+            placeholder={translator.t("event_title")}
+            onChangeText={onTitleChange}
+            value={updatedEvent.title}
+            editable={updatedEvent.allowsModifications}
+          />
+        </View>
 
-        <TextInput
-          placeholder={translator.t("event_notes")}
-          onChangeText={onNotesChange}
-          value={updatedEvent.notes}
-          editable={updatedEvent.allowsModifications}
-          style={{
-            borderTopLeftRadius: 0,
-            borderTopRightRadius: 0,
-          }}
-        />
-
-        <TextInput
-          placeholder={translator.t("event_location")}
-          onChangeText={onLocationChange}
-          value={updatedEvent.location}
-          editable={updatedEvent.allowsModifications}
-          style={{ marginTop: 20 }}
-        />
+        <View>
+          <Text
+            style={{
+              color: theme.NEUTRAL[200],
+              fontSize: 16,
+              fontWeight: "500",
+              marginBottom: 10,
+            }}
+          >
+            {translator.t("notes")}
+          </Text>
+          <TextInput
+            placeholder={translator.t("event_notes")}
+            onChangeText={onNotesChange}
+            value={updatedEvent.notes}
+            editable={updatedEvent.allowsModifications}
+            multiline
+            style={{
+              height: 120,
+              paddingTop: 14,
+            }}
+          />
+        </View>
       </View>
 
       {isEmpty && (
-        <View>
+        <View style={{ marginBottom: 20 }}>
+          <Text
+            style={{
+              color: theme.NEUTRAL[200],
+              fontSize: 16,
+              fontWeight: "500",
+              marginBottom: 10,
+              ...styles.horizontalSafeAreaPadding,
+            }}
+          >
+            {translator.t("calendar")}
+          </Text>
           <ScrollView
             showsHorizontalScrollIndicator={false}
             horizontal
             style={{
-              marginBottom: 20,
               paddingLeft: 20,
             }}
           >
@@ -250,6 +272,16 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
       )}
 
       <View style={{ ...styles.horizontalSafeAreaPadding }}>
+        <Text
+          style={{
+            color: theme.NEUTRAL[200],
+            fontSize: 16,
+            fontWeight: "500",
+            marginBottom: 10,
+          }}
+        >
+          {translator.t("duration")}
+        </Text>
         <View
           style={{
             backgroundColor: theme.NEUTRAL[900],
