@@ -12,8 +12,8 @@
   "event_title": "Event Title",
   "event_notes": "Event Notes",
   "event_location": "Event Location",
-  "starts_at": "Starts at",
-  "ends_at": "Ends at",
+  "starts_at": "Start Time",
+  "ends_at": "Ends Time",
   "calendar_name": "Calendar Name",
   "delete_event": "Delete Event",
   "full_day": "Full day",
@@ -23,5 +23,10 @@
   "allow_access": "Please allow Today to access your iOS calendars.",
   "personal_data": "All of your personal data is kept private.",
   "private_info": "Your calendars are kept on your device and are not shared with anyone.",
-  "allow": "Continue"
+  "allow": "Continue",
+  "title": "Title",
+  "notes": "Notes",
+  "calendar": "Calendar",
+  "duration": "Duration",
+  "name": "Name"
 }

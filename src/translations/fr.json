@@ -23,5 +23,10 @@
   "allow_access": "Veuillez autoriser Today à accéder à vos calendriers iOS.",
   "personal_data": "Toutes vos données personnelles sont gardées privées.",
   "private_info": "Vos calendriers sont conservés sur votre appareil et ne sont partagés avec personne.",
-  "allow": "Continuer"
+  "allow": "Continuer",
+  "title": "Titre",
+  "notes": "Remarques",
+  "calendar": "Calendrier",
+  "duration": "Durée",
+  "name": "Titre"
 }

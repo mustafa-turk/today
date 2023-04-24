@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as Calendar from "expo-calendar";
 
-import { View } from "react-native";
+import { View, Text } from "react-native";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 
@@ -46,12 +46,23 @@ const NewCalendar: React.FC<Props> = (props) => {
 
   return (
     <ModalScreen isEmpty {...props} onSave={createCalendar}>
-      <TextInput
-        placeholder={translator.t("calendar_name")}
-        onChangeText={setTitle}
-        value={title}
-        style={{}}
-      />
+      <View>
+        <Text
+          style={{
+            color: theme.NEUTRAL[200],
+            fontSize: 16,
+            fontWeight: "500",
+            marginBottom: 10,
+          }}
+        >
+          {translator.t("name")}
+        </Text>
+        <TextInput
+          placeholder={translator.t("calendar_name")}
+          onChangeText={setTitle}
+          value={title}
+        />
+      </View>
       <View
         style={{
           gap: 8,

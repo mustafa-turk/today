@@ -6,7 +6,7 @@ function CustomTextInput({
   placeholder,
   value,
   onChangeText,
-  style,
+  style = {},
   ...props
 }) {
   return (
