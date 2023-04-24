@@ -1,4 +1,5 @@
 import * as React from "react";
+import { find, isEmpty } from "lodash";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -10,17 +11,15 @@ import Button from "@/components/button";
 import Screen from "@/components/screen";
 import Swipeable from "@/components/swipeable";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
-import { find, isEmpty } from "lodash";
 
-import translator from "@/utils/i18n";
+import useCalendars from "@/hooks/use-calendars";
 
 import * as date from "@/utils/date";
-import * as calendar from "@/utils/calendar";
-
+import translator from "@/utils/i18n";
 import theme from "@/styles/theme";
 
-import { CalendarType, EventType, RootStackParamList } from "@/utils/types";
-import { SCREENS } from "@/utils/constants";
+import { RootStackParamList } from "@/utils/types";
+import { CALENDAR_REDUCER_TYPES, SCREENS } from "@/utils/constants";
 
 type HomeScreenRouteProp = RouteProp<RootStackParamList, "HOME">;
 
@@ -32,75 +31,34 @@ type Props = {
 };
 
 const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
-  const [calendars, setCalendars] = React.useState<CalendarType[]>([]);
-  const [events, setEvents] = React.useState<EventType[]>([]);
-
-  const [currentDate, setCurrentDate] = React.useState(new Date());
-  const [currentCalendarId, setCurrentCalendarId] = React.useState("all");
-  const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
+  const { reset, state, dispatch, removeEvent } = useCalendars();
 
   useFocusEffect(
     React.useCallback(() => {
       if (route.params?.date) {
-        setCurrentDate(new Date(route.params?.date));
-        setCurrentCalendarId("all");
+        reset(new Date(route.params.date));
       }
     }, [route.params?.date])
   );
 
-  useFocusEffect(
-    React.useCallback(() => {
-      (async () => {
-        const cals = await calendar.getCalendars();
-        setCalendars(cals);
-      })();
-    }, [])
-  );
-
-  React.useEffect(() => {
-    (async () => {
-      const id = await calendar.getDefaultCalendarId();
-      setDefaultCalendarId(id);
-    })();
-  }, []);
-
-  React.useEffect(() => {
-    (async () => {
-      const cals = await calendar.getCalendars();
-      const evs = await calendar.getEvents(
-        cals,
-        currentDate,
-        currentCalendarId
-      );
-
-      setCalendars(cals);
-      setEvents(evs);
-    })();
-  }, [currentDate, currentCalendarId]);
-
-  const handleEventDelete = async (id: string) => {
-    await calendar.deleteEvent(id);
-    const evs = await calendar.getEvents(
-      calendars,
-      currentDate,
-      currentCalendarId
-    );
-    setEvents(evs);
-  };
-
-  const eventsLabel = `${events.length} ${
-    events.length === 1 ? translator.t("event") : translator.t("events")
+  const eventsLabel = `${state.events.length} ${
+    state.events.length === 1 ? translator.t("event") : translator.t("events")
   }`;
 
   const isCalendarWritable = find(
-    calendars,
-    (cal) => cal.id === currentCalendarId
+    state.calendars,
+    (cal) => cal.id === state.currentCalendarId
   )?.allowsModifications;
 
   return (
     <Screen>
       <Button
-        onPress={() => setCurrentDate(new Date())}
+        onPress={() =>
+          dispatch({
+            type: CALENDAR_REDUCER_TYPES.SET_CURRENT_DATE,
+            payload: new Date(),
+          })
+        }
         style={{
           backgroundColor: theme.BLUE,
           alignSelf: "center",
@@ -111,7 +69,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         }}
       >
         <Text style={{ color: "white", fontWeight: "500" }}>
-          {date.isToday(currentDate)
+          {date.isToday(state.currentDate)
             ? translator.t("today")
             : translator.t("back_to_today")}
         </Text>
@@ -127,21 +85,31 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       >
         <Button
           style={styles.button}
-          onPress={() => setCurrentDate(date.getPreviousDay(currentDate))}
+          onPress={() =>
+            dispatch({
+              type: CALENDAR_REDUCER_TYPES.SET_CURRENT_DATE,
+              payload: date.getPreviousDay(state.currentDate),
+            })
+          }
         >
           <ArrowLeft size={24} color={theme.NEUTRAL[400]} />
         </Button>
 
         <View style={{ justifyContent: "center" }}>
-          <Text style={styles.title}>{date.getDay(currentDate)}</Text>
+          <Text style={styles.title}>{date.getDay(state.currentDate)}</Text>
           <Text style={styles.date}>{`${date.getDayDigits(
-            currentDate
-          )} ${date.getMonth(currentDate)}`}</Text>
+            state.currentDate
+          )} ${date.getMonth(state.currentDate)}`}</Text>
         </View>
 
         <Button
           style={styles.button}
-          onPress={() => setCurrentDate(date.getNextDay(currentDate))}
+          onPress={() =>
+            dispatch({
+              type: CALENDAR_REDUCER_TYPES.SET_CURRENT_DATE,
+              payload: date.getNextDay(state.currentDate),
+            })
+          }
         >
           <ArrowRight size={24} color={theme.NEUTRAL[400]} />
         </Button>
@@ -161,11 +129,16 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           }}
         >
           <Button
-            onPress={() => setCurrentCalendarId("all")}
+            onPress={() =>
+              dispatch({
+                type: CALENDAR_REDUCER_TYPES.SET_CURRENT_CALENDAR_ID,
+                payload: "all",
+              })
+            }
             style={{
               ...styles.allButton,
               backgroundColor:
-                currentCalendarId === "all"
+                state.currentCalendarId === "all"
                   ? theme.NEUTRAL[100]
                   : theme.NEUTRAL[950],
             }}
@@ -173,7 +146,8 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             <>
               <Text
                 style={{
-                  color: currentCalendarId === "all" ? "#212224" : "white",
+                  color:
+                    state.currentCalendarId === "all" ? "#212224" : "white",
                   fontSize: 16,
                   fontWeight: "500",
                 }}
@@ -182,14 +156,19 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               </Text>
             </>
           </Button>
-          {calendars.map((calendar, key) => (
+          {state.calendars.map((calendar, key) => (
             <Button
               key={key}
-              onPress={() => setCurrentCalendarId(calendar.id)}
+              onPress={() =>
+                dispatch({
+                  type: CALENDAR_REDUCER_TYPES.SET_CURRENT_CALENDAR_ID,
+                  payload: calendar.id,
+                })
+              }
               style={{
                 ...styles.calenderButton,
                 backgroundColor:
-                  currentCalendarId === calendar.id
+                  state.currentCalendarId === calendar.id
                     ? theme.NEUTRAL[100]
                     : theme.NEUTRAL[950],
               }}
@@ -203,7 +182,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               <Text
                 style={{
                   color:
-                    currentCalendarId === calendar.id ? "#212224" : "white",
+                    state.currentCalendarId === calendar.id
+                      ? "#212224"
+                      : "white",
                   fontSize: 16,
                   fontWeight: "500",
                 }}
@@ -230,12 +211,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <Button
             onPress={() =>
               navigation.navigate(SCREENS.EVENT_DETAILS, {
-                calendars,
+                calendars: state.calendars,
                 defaultCalendarId:
-                  currentCalendarId === "all" || !isCalendarWritable
-                    ? defaultCalendarId
-                    : currentCalendarId,
-                date: currentDate.toISOString(),
+                  state.currentCalendarId === "all" || !isCalendarWritable
+                    ? state.defaultCalendarId
+                    : state.currentCalendarId,
+                date: state.currentDate.toISOString(),
                 isEmpty: true,
               })
             }
@@ -244,7 +225,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             <PlusIcon size={21} color={theme.NEUTRAL[900]} />
           </Button>
         </View>
-        {isEmpty(events) ? (
+        {isEmpty(state.events) ? (
           <Text style={styles.eventsContainerEmptyMessage}>
             {translator.t("looks_empty")}
           </Text>
@@ -254,10 +235,10 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
               <View style={styles.eventsListSeperator} />
             )}
             showsVerticalScrollIndicator={false}
-            data={events}
+            data={state.events}
             renderItem={({ item: event }) => (
               <Swipeable
-                onPress={() => handleEventDelete(event.id)}
+                onPress={() => removeEvent(event.id)}
                 enabled={event.allowsModifications}
               >
                 <Event
@@ -266,8 +247,8 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
                   onPress={() =>
                     navigation.navigate(SCREENS.EVENT_DETAILS, {
                       event,
-                      calendars,
-                      date: currentDate.toISOString(),
+                      calendars: state.calendars,
+                      date: state.currentDate.toISOString(),
                     })
                   }
                 />
