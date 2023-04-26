@@ -1,6 +1,6 @@
 import * as Calendar from "expo-calendar";
 import * as date from "@/utils/date";
-import { find, flatten } from "lodash";
+import { find, first, flatten } from "lodash";
 import { CalendarType } from "./types";
 
 export const isCalendarNameValid = (name: string) => {
@@ -75,8 +75,8 @@ export const deleteEvent = async (id: string) => {
 };
 
 export const getDefaultCalendarId = async () => {
-  const defaultCalendar = await Calendar.getDefaultCalendarAsync();
-  return defaultCalendar.id;
+  const calendars = await getCalendars();
+  return first(calendars).id;
 };
 
 export const filterWritableCalendars = (calendars: CalendarType[]) => {
