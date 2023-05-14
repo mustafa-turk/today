@@ -5,6 +5,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import Event from "@/components/event";
 import Button from "@/components/button";
 import Screen from "@/components/screen";
@@ -21,6 +23,7 @@ import theme from "@/styles/theme";
 
 import { CalendarType, EventType, RootStackParamList } from "@/utils/types";
 import { SCREENS } from "@/utils/constants";
+import { supportedLang } from "@/utils/lang";
 
 type HomeScreenRouteProp = RouteProp<RootStackParamList, "HOME">;
 
@@ -38,6 +41,10 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [currentCalendarId, setCurrentCalendarId] = React.useState("all");
   const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
+
+  const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+
+  const lang = supportedLang();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -132,12 +139,15 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           <ArrowLeft size={24} color={theme.NEUTRAL[400]} />
         </Button>
 
-        <View style={{ justifyContent: "center" }}>
+        <Button
+          style={{ justifyContent: "center" }}
+          onPress={() => setDatePickerVisibility(true)}
+        >
           <Text style={styles.title}>{date.getDay(currentDate)}</Text>
           <Text style={styles.date}>{`${date.getDayDigits(
             currentDate
           )} ${date.getMonth(currentDate)}`}</Text>
-        </View>
+        </Button>
 
         <Button
           style={styles.button}
@@ -276,6 +286,19 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           />
         )}
       </View>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode='date'
+        locale={lang}
+        onConfirm={(date) => {
+          setCurrentDate(date);
+          setDatePickerVisibility(false);
+        }}
+        display='inline'
+        onCancel={() => setDatePickerVisibility(false)}
+        confirmTextIOS={translator.t("save")}
+        cancelTextIOS={translator.t("cancel")}
+      />
     </Screen>
   );
 };

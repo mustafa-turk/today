@@ -10,7 +10,4 @@ export const STORAGE = {
   HAS_LAUNCHED: "HAS_LAUNCHED",
 };
 
-export const SUPPORTED_LANGS = {
-  FR: "fr-US",
-  EN: "en-US",
-};
+export const SUPPORTED_LANGS = ["fr-US", "en-US"];
