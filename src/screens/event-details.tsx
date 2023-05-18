@@ -24,6 +24,7 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { EventType, RootStackParamList } from "@/utils/types";
 import Button from "@/components/button";
+
 import { SCREENS } from "@/utils/constants";
 
 type EventDetailsScreenRouteProp = RouteProp<
@@ -93,10 +94,6 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
 
   const onTitleChange = (title: string) => {
     setUpdatedEvent({ ...updatedEvent, title });
-  };
-
-  const onLocationChange = (location: string) => {
-    setUpdatedEvent({ ...updatedEvent, location });
   };
 
   const onNotesChange = (notes: string) => {

@@ -290,6 +290,14 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         isVisible={isDatePickerVisible}
         mode='date'
         locale={lang}
+        customConfirmButtonIOS={({ label, onPress }) => (
+          <Button style={styles.saveDateButton} onPress={onPress}>
+            <Text style={styles.saveDateButtonLabel}>{label}</Text>
+          </Button>
+        )}
+        customCancelButtonIOS={() => (
+          <View style={{ height: 50, backgroundColor: "none" }} />
+        )}
         onConfirm={(date) => {
           setCurrentDate(date);
           setDatePickerVisibility(false);
@@ -387,6 +395,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 6,
     borderRadius: 20,
+  },
+  saveDateButton: {
+    backgroundColor: theme.NEUTRAL[100],
+    padding: 17,
+    margin: 4,
+    borderRadius: 10,
+  },
+  saveDateButtonLabel: {
+    color: theme.NEUTRAL[900],
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "600",
   },
   eventsContainerEmptyMessage: {
     color: theme.NEUTRAL[400],
