@@ -44,8 +44,10 @@ const NewCalendar: React.FC<Props> = (props) => {
     });
   };
 
+  const canSave = Boolean(title);
+
   return (
-    <ModalScreen isEmpty {...props} onSave={createCalendar}>
+    <ModalScreen isEmpty {...props} onSave={createCalendar} canSave={canSave}>
       <View>
         <Text
           style={{

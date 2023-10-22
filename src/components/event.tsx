@@ -1,10 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 
 import theme from "@/styles/theme";
-import { ClockIcon } from "./icon";
 import { EventType } from "@/utils/types";
-
-import translator from "@/utils/i18n";
 
 type Props = {
   details: EventType;
@@ -27,57 +24,61 @@ const Event = ({ disabled, details, onPress }: Props) => {
       disabled={disabled}
       style={{
         margin: 20,
-        paddingHorizontal: 20,
+        paddingLeft: 20,
+        paddingRight: 10,
         borderLeftWidth: 3,
         borderLeftColor: details.color,
       }}
     >
-      <View style={{ marginBottom: 2 }}>
-        <Text
+      <View>
+        <View style={{ marginBottom: 2 }}>
+          <Text
+            style={{
+              color: details.color,
+              fontSize: 14,
+              fontWeight: "600",
+            }}
+          >
+            {details.calendarTitle}
+          </Text>
+        </View>
+        <View style={{ marginBottom: 2 }}>
+          <Text
+            style={{
+              color: colors.title,
+              fontSize: 19,
+              fontWeight: "600",
+            }}
+          >
+            {details.title}
+          </Text>
+        </View>
+        {details.location && <Text
           style={{
-            color: details.color,
-            fontSize: 14,
-            fontWeight: "600",
+            color: theme.NEUTRAL[400],
+            fontSize: 17,
+            fontWeight: "500",
           }}
         >
-          {details.calendarTitle}
-        </Text>
+          {details.location}
+        </Text>}
       </View>
-      <View style={{ marginBottom: 2 }}>
-        <Text
-          style={{
-            color: colors.title,
-            fontSize: 19,
-            fontWeight: "600",
-          }}
-        >
-          {details.title}
-        </Text>
-      </View>
-
-      <Text
-        style={{
-          color: theme.NEUTRAL[400],
-          fontSize: 17,
-          fontWeight: "500",
-        }}
-      >
-        {details.location}
-      </Text>
 
       <View
         style={{
-          marginTop: 15,
-          flexDirection: "row",
           gap: 6,
-          alignItems: "center",
+          flexDirection: "row",
+          marginTop: 10
         }}
       >
-        <ClockIcon color={colors.subText} size={14} />
-        <Text style={{ color: colors.subText, fontSize: 14 }}>
-          {details.isEventAllDay
-            ? translator.t("full_day")
-            : `${details.startTime} - ${details.endTime}`}
+        <Text style={{ color: colors.title, fontSize: 16, fontWeight: "600" }}>
+          {details.startTime}
+        </Text>
+        <Text style={{ color: colors.title, fontSize: 16, fontWeight: "600" }}>
+          -
+        </Text>
+        <Text style={{ color: colors.subText, fontSize: 16, fontWeight: "600" }}>
+          {details.endTime}
         </Text>
       </View>
     </TouchableOpacity>

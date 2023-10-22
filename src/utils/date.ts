@@ -1,6 +1,17 @@
 import { capitalize } from "lodash";
 import { supportedLang } from "./lang";
 
+export const isFutureEvent = (date: Date) => {
+  return new Date(date) > new Date();
+}
+
+export const getNotifyDate = (date: Date, notifyBefore: number) => {
+  const notifyDate = new Date(date.getTime() - notifyBefore * 60000);
+  notifyDate.setSeconds(0);
+
+  return notifyDate;
+}
+
 export const getDay = (date: Date) => {
   const lang = supportedLang();
   const day = new Intl.DateTimeFormat(lang, {

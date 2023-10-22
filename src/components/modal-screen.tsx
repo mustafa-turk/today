@@ -10,6 +10,7 @@ type Props = {
   navigation: any;
   isEmpty: boolean;
   onSave: Function;
+  canSave: boolean;
 };
 
 const ModalScreen: React.FC<Props> = ({
@@ -17,6 +18,7 @@ const ModalScreen: React.FC<Props> = ({
   navigation,
   isEmpty,
   onSave,
+  canSave,
 }) => {
   const goBack = () => {
     navigation.navigate(SCREENS.HOME);
@@ -48,8 +50,14 @@ const ModalScreen: React.FC<Props> = ({
           <Text style={styles.cancel}>{translator.t("cancel")}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleSave}>
-          <Text style={{ ...styles.cancel, color: "white" }}>
+        <TouchableOpacity onPress={handleSave} disabled={!canSave}>
+          <Text
+            style={{
+              ...styles.cancel,
+              color: canSave ? theme.NEUTRAL[100] : theme.NEUTRAL[700],
+              fontWeight: "600",
+            }}
+          >
             {translator.t("save")}
           </Text>
         </TouchableOpacity>

@@ -1,9 +1,11 @@
 import * as React from "react";
+import * as Notifications from "expo-notifications";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
@@ -11,6 +13,7 @@ import Event from "@/components/event";
 import Button from "@/components/button";
 import Screen from "@/components/screen";
 import Swipeable from "@/components/swipeable";
+import CalendarSelector from "@/components/calendar-selector";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
 import { find, isEmpty } from "lodash";
 
@@ -93,6 +96,11 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       currentCalendarId
     );
     setEvents(evs);
+
+    const notificationId = await AsyncStorage.getItem(id);
+    if (notificationId) {
+      await Notifications.cancelScheduledNotificationAsync(notificationId);
+    }
   };
 
   const eventsLabel = `${events.length} ${
@@ -168,59 +176,24 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           horizontal
           style={{
             marginTop: 10,
+            paddingLeft: 20,
           }}
         >
-          <Button
+          <CalendarSelector
+            isActive={currentCalendarId === "all"}
             onPress={() => setCurrentCalendarId("all")}
-            style={{
-              ...styles.allButton,
-              backgroundColor:
-                currentCalendarId === "all"
-                  ? theme.NEUTRAL[100]
-                  : theme.NEUTRAL[950],
-            }}
           >
-            <>
-              <Text
-                style={{
-                  color: currentCalendarId === "all" ? "#212224" : "white",
-                  fontSize: 16,
-                  fontWeight: "500",
-                }}
-              >
-                {translator.t("all")}
-              </Text>
-            </>
-          </Button>
+            {translator.t("all")}
+          </CalendarSelector>
           {calendars.map((calendar, key) => (
-            <Button
+            <CalendarSelector
+              color={calendar.color}
+              isActive={currentCalendarId === calendar.id}
               key={key}
               onPress={() => setCurrentCalendarId(calendar.id)}
-              style={{
-                ...styles.calenderButton,
-                backgroundColor:
-                  currentCalendarId === calendar.id
-                    ? theme.NEUTRAL[100]
-                    : theme.NEUTRAL[950],
-              }}
             >
-              <View
-                style={{
-                  ...styles.calenderIcon,
-                  backgroundColor: calendar.color,
-                }}
-              />
-              <Text
-                style={{
-                  color:
-                    currentCalendarId === calendar.id ? "#212224" : "white",
-                  fontSize: 16,
-                  fontWeight: "500",
-                }}
-              >
-                {calendar.title}
-              </Text>
-            </Button>
+              {calendar.title}
+            </CalendarSelector>
           ))}
           <Button
             onPress={() => navigation.navigate(SCREENS.NEW_CALENDAR)}
@@ -263,6 +236,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             ItemSeparatorComponent={() => (
               <View style={styles.eventsListSeperator} />
             )}
+            ListFooterComponent={() => (
+              <View style={styles.eventsListSeperator} />
+            )}
             showsVerticalScrollIndicator={false}
             data={events}
             renderItem={({ item: event }) => (
@@ -290,6 +266,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         isVisible={isDatePickerVisible}
         mode='date'
         locale={lang}
+        isDarkModeEnabled={false}
         customConfirmButtonIOS={({ label, onPress }) => (
           <Button style={styles.saveDateButton} onPress={onPress}>
             <Text style={styles.saveDateButtonLabel}>{label}</Text>
@@ -327,31 +304,6 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 14,
     paddingHorizontal: 18,
-  },
-  allButton: {
-    padding: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    flexDirection: "row",
-    marginRight: 10,
-    gap: 8,
-    marginLeft: 20,
-    borderWidth: 1,
-    borderColor: theme.NEUTRAL[800],
-  },
-  calenderButton: {
-    padding: 12,
-    borderRadius: 8,
-    flexDirection: "row",
-    marginRight: 10,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: theme.NEUTRAL[800],
-  },
-  calenderIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 6,
   },
   createCalendarButton: {
     backgroundColor: theme.NEUTRAL[950],
@@ -398,14 +350,14 @@ const styles = StyleSheet.create({
   },
   saveDateButton: {
     backgroundColor: theme.NEUTRAL[100],
-    padding: 17,
+    padding: 16,
     margin: 4,
-    borderRadius: 10,
+    borderRadius: 12,
   },
   saveDateButtonLabel: {
     color: theme.NEUTRAL[900],
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "600",
   },
   eventsContainerEmptyMessage: {

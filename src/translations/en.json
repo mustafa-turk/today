@@ -28,5 +28,6 @@
   "notes": "Notes",
   "calendar": "Calendar",
   "duration": "Duration",
-  "name": "Name"
+  "name": "Name",
+  "alert": "Remind Me"
 }

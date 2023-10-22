@@ -8,7 +8,7 @@ type ButtonProps = {
 
 const Button = (props: ButtonProps) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} {...props}>
+    <TouchableOpacity activeOpacity={1} {...props}>
       {props.children}
     </TouchableOpacity>
   );

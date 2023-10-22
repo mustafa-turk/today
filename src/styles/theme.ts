@@ -12,5 +12,5 @@ export default {
     "900": "#1e1e1e",
     "950": "#0f0f0f",
   },
-  BLUE: "#295EF2",
+  BLUE: "#007AFF",
 };
