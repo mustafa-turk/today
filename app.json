@@ -3,10 +3,10 @@
     "name": "Calendio",
     "slug": "today",
     "description": "A minimalistic calendar application.",
-    "version": "1.1.6",
+    "version": "1.1.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "auto",
     "plugins": [
       [
         "expo-calendar",

@@ -266,7 +266,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         isVisible={isDatePickerVisible}
         mode='date'
         locale={lang}
-        isDarkModeEnabled={false}
         customConfirmButtonIOS={({ label, onPress }) => (
           <Button style={styles.saveDateButton} onPress={onPress}>
             <Text style={styles.saveDateButtonLabel}>{label}</Text>
