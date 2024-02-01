@@ -3,18 +3,18 @@ import { supportedLang } from "./lang";
 
 export const isFutureEvent = (date: Date) => {
   return new Date(date) > new Date();
-}
+};
 
 export const getNotifyDate = (date: Date, notifyBefore: number) => {
   const notifyDate = new Date(date.getTime() - notifyBefore * 60000);
   notifyDate.setSeconds(0);
 
   return notifyDate;
-}
+};
 
 export const getDay = (date: Date) => {
   const lang = supportedLang();
-  const day = new Intl.DateTimeFormat(lang, {
+  const day = new Intl.DateTimeFormat(lang || "default", {
     weekday: "long",
   }).format(date);
 
@@ -27,7 +27,8 @@ export const getDayDigits = (date: Date) => {
 };
 
 export const getMonth = (date: Date) => {
-  const month = date.toLocaleString("default", { month: "long" });
+  const lang = supportedLang();
+  const month = date.toLocaleString(lang, { month: "long" });
   return month;
 };
 

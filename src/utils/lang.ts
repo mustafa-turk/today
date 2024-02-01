@@ -2,7 +2,9 @@ import * as Localization from "expo-localization";
 import { SUPPORTED_LANGS } from "./constants";
 
 export const supportedLang = () => {
-  return SUPPORTED_LANGS.includes(Localization.locale)
+  const fallbackLang = "en-US";
+  const [lang] = Localization.getLocales();
+  return SUPPORTED_LANGS.includes(lang.languageCode)
     ? Localization.locale
-    : "en-US";
+    : fallbackLang;
 };
