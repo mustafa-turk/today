@@ -1,11 +1,11 @@
 import * as React from "react";
-import * as Notifications from "expo-notifications";
+
+import { isEmpty } from "lodash";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Event from "@/components/event";
 import Button from "@/components/button";
@@ -14,20 +14,18 @@ import DatePicker from "@/components/date-picker-modal";
 import Swipeable from "@/components/swipeable";
 import CalendarSelector from "@/components/calendar-selector";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
-import { find, isEmpty } from "lodash";
 
 import translator from "@/utils/i18n";
 
 import * as date from "@/utils/date";
-import * as calendar from "@/utils/calendar";
 
 import theme from "@/styles/theme";
 
-import { CalendarType, EventType, RootStackParamList } from "@/utils/types";
+import { RootStackParamList } from "@/utils/types";
 import { SCREENS } from "@/utils/constants";
+import { useCalendarData } from "@/hooks/use-calendar-data";
 
 type HomeScreenRouteProp = RouteProp<RootStackParamList, "HOME">;
-
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "HOME">;
 
 type Props = {
@@ -36,15 +34,14 @@ type Props = {
 };
 
 const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
-  const [calendars, setCalendars] = React.useState<CalendarType[]>([]);
-  const [events, setEvents] = React.useState<EventType[]>([]);
-
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [currentCalendarId, setCurrentCalendarId] = React.useState("all");
-  const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
 
-  useFocusEffect(
+  const { calendars, events, defaultCalendarId, refetchEvents, deleteEvent } =
+    useCalendarData(currentDate, currentCalendarId);
+
+  const CalendarService = useFocusEffect(
     React.useCallback(() => {
       if (route.params?.date) {
         setCurrentDate(new Date(route.params?.date));
@@ -53,57 +50,11 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     }, [route.params?.date])
   );
 
-  useFocusEffect(
-    React.useCallback(() => {
-      (async () => {
-        const cals = await calendar.getCalendars();
-        setCalendars(cals);
-      })();
-    }, [])
-  );
-
-  React.useEffect(() => {
-    (async () => {
-      const id = await calendar.getDefaultCalendarId();
-      setDefaultCalendarId(id);
-    })();
-  }, []);
-
-  React.useEffect(() => {
-    (async () => {
-      const cals = await calendar.getCalendars();
-      const evs = await calendar.getEvents(
-        cals,
-        currentDate,
-        currentCalendarId
-      );
-
-      setCalendars(cals);
-      setEvents(evs);
-    })();
-  }, [currentDate, currentCalendarId]);
-
-  const handleEventDelete = async (id: string) => {
-    await calendar.deleteEvent(id);
-    const evs = await calendar.getEvents(
-      calendars,
-      currentDate,
-      currentCalendarId
-    );
-    setEvents(evs);
-
-    const notificationId = await AsyncStorage.getItem(id);
-    if (notificationId) {
-      await Notifications.cancelScheduledNotificationAsync(notificationId);
-    }
-  };
-
   const eventsLabel = `${events.length} ${translator.t(
     events.length === 1 ? "event" : "events"
   )}`;
 
-  const isCalendarWritable = find(
-    calendars,
+  const isCalendarWritable = calendars.find(
     (cal) => cal.id === currentCalendarId
   )?.allowsModifications;
 
@@ -116,30 +67,16 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       />
       <Button
         onPress={() => setCurrentDate(new Date())}
-        style={{
-          backgroundColor: theme.BLUE,
-          alignSelf: "center",
-          marginBottom: 14,
-          padding: 6,
-          paddingHorizontal: 12,
-          borderRadius: 20,
-        }}
+        style={styles.todayButton}
       >
-        <Text style={{ color: "white", fontWeight: "500" }}>
+        <Text style={styles.todayButtonText}>
           {date.isToday(currentDate)
             ? translator.t("today")
             : translator.t("back_to_today")}
         </Text>
       </Button>
 
-      <View
-        style={{
-          ...styles.horizontalSafeAreaPadding,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.headerContainer}>
         <Button
           style={styles.button}
           onPress={() => setCurrentDate(date.getPreviousDay(currentDate))}
@@ -148,7 +85,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         </Button>
 
         <Button
-          style={{ justifyContent: "center" }}
+          style={styles.dateButton}
           onPress={() => setDatePickerVisibility(true)}
         >
           <Text style={styles.title}>{date.getDay(currentDate)}</Text>
@@ -165,19 +102,11 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
         </Button>
       </View>
 
-      <View
-        style={{
-          marginTop: 40,
-          marginBottom: 20,
-        }}
-      >
+      <View style={styles.calendarContainer}>
         <ScrollView
           showsHorizontalScrollIndicator={false}
           horizontal
-          style={{
-            marginTop: 10,
-            paddingLeft: 20,
-          }}
+          style={styles.calendarScroll}
         >
           <CalendarSelector
             isActive={currentCalendarId === "all"}
@@ -243,7 +172,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
             data={events}
             renderItem={({ item: event }) => (
               <Swipeable
-                onPress={() => handleEventDelete(event.id)}
+                onPress={() => deleteEvent(event.id)}
                 enabled={event.allowsModifications}
               >
                 <Event
@@ -267,6 +196,31 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  todayButton: {
+    backgroundColor: theme.BLUE,
+    alignSelf: "center",
+    marginBottom: 14,
+    padding: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+  },
+  todayButtonText: {
+    color: "white",
+    fontWeight: "500",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  button: {
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+  },
+  dateButton: {
+    justifyContent: "center",
+  },
   title: {
     color: theme.NEUTRAL[100],
     fontWeight: "bold",
@@ -279,9 +233,13 @@ const styles = StyleSheet.create({
     fontSize: 21,
     textAlign: "center",
   },
-  button: {
-    paddingVertical: 14,
-    paddingHorizontal: 18,
+  calendarContainer: {
+    marginTop: 40,
+    marginBottom: 20,
+  },
+  calendarScroll: {
+    marginTop: 10,
+    paddingLeft: 20,
   },
   createCalendarButton: {
     backgroundColor: theme.NEUTRAL[950],
@@ -326,25 +284,16 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 20,
   },
-  saveDateButton: {
-    backgroundColor: theme.NEUTRAL[100],
-    padding: 16,
-    margin: 4,
-    borderRadius: 12,
-  },
-  saveDateButtonLabel: {
-    color: theme.NEUTRAL[900],
-    textAlign: "center",
-    fontSize: 17,
-    fontWeight: "600",
-  },
   eventsContainerEmptyMessage: {
     color: theme.NEUTRAL[400],
     textAlign: "center",
     marginTop: 40,
     fontSize: 16,
   },
-  eventsListSeperator: { backgroundColor: theme.NEUTRAL[900], height: 1 },
+  eventsListSeperator: {
+    backgroundColor: theme.NEUTRAL[900],
+    height: 1,
+  },
   horizontalSafeAreaPadding: {
     paddingHorizontal: 20,
   },

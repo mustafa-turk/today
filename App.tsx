@@ -10,8 +10,8 @@ import NewCalendar from "@/screens/new-calendar";
 import GrantAccessScreen from "@/screens/get-started/grant-access";
 import GetStartedScreen from "@/screens/get-started/get-started";
 
-import useNotifications from "@/hooks/useNotifications";
-import useLauncher from "@/hooks/useLauncher";
+import useNotifications from "@/hooks/use-notifications";
+import useLauncher from "@/hooks/use-launcher";
 
 import { RootStackParamList } from "@/utils/types";
 import { SCREENS } from "@/utils/constants";
