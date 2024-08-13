@@ -7,11 +7,10 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-
 import Event from "@/components/event";
 import Button from "@/components/button";
 import Screen from "@/components/screen";
+import DatePicker from "@/components/date-picker-modal";
 import Swipeable from "@/components/swipeable";
 import CalendarSelector from "@/components/calendar-selector";
 import { ArrowLeft, ArrowRight, PlusIcon } from "@/components/icon";
@@ -26,7 +25,6 @@ import theme from "@/styles/theme";
 
 import { CalendarType, EventType, RootStackParamList } from "@/utils/types";
 import { SCREENS } from "@/utils/constants";
-import { supportedLang } from "@/utils/lang";
 
 type HomeScreenRouteProp = RouteProp<RootStackParamList, "HOME">;
 
@@ -44,10 +42,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [currentDate, setCurrentDate] = React.useState(new Date());
   const [currentCalendarId, setCurrentCalendarId] = React.useState("all");
   const [defaultCalendarId, setDefaultCalendarId] = React.useState("");
-
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
-
-  const lang = supportedLang();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -103,9 +98,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     }
   };
 
-  const eventsLabel = `${events.length} ${
-    events.length === 1 ? translator.t("event") : translator.t("events")
-  }`;
+  const eventsLabel = `${events.length} ${translator.t(
+    events.length === 1 ? "event" : "events"
+  )}`;
 
   const isCalendarWritable = find(
     calendars,
@@ -114,6 +109,11 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <Screen>
+      <DatePicker
+        isVisible={isDatePickerVisible}
+        setDatePickerVisibility={setDatePickerVisibility}
+        onConfirm={setCurrentDate}
+      />
       <Button
         onPress={() => setCurrentDate(new Date())}
         style={{
@@ -262,27 +262,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
           />
         )}
       </View>
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode='date'
-        locale={lang}
-        customConfirmButtonIOS={({ label, onPress }) => (
-          <Button style={styles.saveDateButton} onPress={onPress}>
-            <Text style={styles.saveDateButtonLabel}>{label}</Text>
-          </Button>
-        )}
-        customCancelButtonIOS={() => (
-          <View style={{ height: 50, backgroundColor: "none" }} />
-        )}
-        onConfirm={(date) => {
-          setCurrentDate(date);
-          setDatePickerVisibility(false);
-        }}
-        display='inline'
-        onCancel={() => setDatePickerVisibility(false)}
-        confirmTextIOS={translator.t("save")}
-        cancelTextIOS={translator.t("cancel")}
-      />
     </Screen>
   );
 };
