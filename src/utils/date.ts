@@ -42,17 +42,14 @@ export const getStartAndEndOfDay = (date: Date): { start: Date; end: Date } => {
   return { start, end };
 };
 
-export const getTimeFromString = (date: string | Date): string => {
+export const getTimeFromString = (date: Date): string => {
   const parsedDate = new Date(date);
   const hours = addZero(parsedDate.getHours());
   const minutes = addZero(parsedDate.getMinutes());
   return `${hours}:${minutes}`;
 };
 
-export const timeBetweenDates = (
-  startTime: string | Date,
-  endTime: string | Date
-): number => {
+export const timeBetweenDates = (startTime: Date, endTime: Date): number => {
   const difference =
     new Date(endTime).getTime() - new Date(startTime).getTime();
   return Math.round(difference / 60000);
@@ -85,10 +82,7 @@ export const isToday = (date: Date): boolean => {
   );
 };
 
-export const isEventFullDay = (
-  startTime: string | Date,
-  endTime: string | Date
-): boolean => {
+export const isEventFullDay = (startTime: Date, endTime: Date): boolean => {
   const FULL_DAY_MINUTES = 1440;
   return timeBetweenDates(startTime, endTime) === FULL_DAY_MINUTES;
 };

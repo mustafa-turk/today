@@ -14,7 +14,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import * as Notifications from "expo-notifications";
 
 import TextInput from "@/components/text-input";
 import CalendarSelector from "@/components/calendar-selector";
@@ -30,6 +29,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { EventType, RootStackParamList } from "@/utils/types";
 
 import { SCREENS } from "@/utils/constants";
+import EventService from "@/services/events-service";
 
 type EventDetailsScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -83,37 +83,15 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
   const onSave = async () => {
     let eventId: string;
 
-    if (isEmpty) {
-      eventId = await Calendar.createEventAsync(updatedEvent.calendarId, {
-        title: updatedEvent.title,
-        startDate: updatedEvent.startDate,
-        endDate: updatedEvent.endDate,
-        notes: updatedEvent.notes,
-        location: updatedEvent.location,
-      });
-    } else {
-      eventId = await Calendar.updateEventAsync(updatedEvent.id, {
-        title: updatedEvent.title,
-        startDate: updatedEvent.startDate,
-        endDate: updatedEvent.endDate,
-        calendarId: updatedEvent.calendarId,
-        notes: updatedEvent.notes,
-        location: updatedEvent.location,
-      });
-    }
+    await EventService.createOrUpdateEvent(updatedEvent, isEmpty);
 
-    if (isStartDateFuture && shouldNotifyBefore) {
-      const notificationId = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: updatedEvent.title,
-          sound: "default",
-        },
-        trigger: dateUtils.getNotifyDate(new Date(updatedEvent.startDate), 1),
-      });
-
-      await AsyncStorage.setItem(eventId, notificationId);
-    } else if (!shouldNotifyBefore) {
-      await AsyncStorage.removeItem(eventId);
+    if (isStartDateFuture) {
+      await EventService.scheduleNotification(
+        eventId,
+        updatedEvent.title,
+        updatedEvent.startDate,
+        shouldNotifyBefore
+      );
     }
     goBack();
   };
@@ -121,7 +99,7 @@ const EventDetails: React.FC<Props> = ({ navigation, route }) => {
   const canSave = Boolean(updatedEvent.title);
 
   const onDelete = async () => {
-    await Calendar.deleteEventAsync(updatedEvent.id);
+    await EventService.deleteEvent(updatedEvent.id);
     goBack();
   };
 
