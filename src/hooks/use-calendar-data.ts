@@ -3,6 +3,7 @@ import * as Notifications from "expo-notifications";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import EventService from "@/services/events-service";
 import CalendarService from "@/services/calendar-service";
 
 import { CalendarType, EventType } from "@/utils/types";
@@ -40,7 +41,7 @@ export const useCalendarData = (
   }, [currentDate, currentCalendarId]);
 
   const fetchEvents = async (calendarsList = calendars) => {
-    const evs = await CalendarService.getEvents(
+    const evs = await EventService.getEvents(
       calendarsList,
       currentDate,
       currentCalendarId
@@ -49,7 +50,7 @@ export const useCalendarData = (
   };
 
   const deleteEvent = async (id: string) => {
-    await CalendarService.deleteEvent(id);
+    await EventService.deleteEvent(id);
     await fetchEvents();
 
     const notificationId = await AsyncStorage.getItem(id);
@@ -62,7 +63,6 @@ export const useCalendarData = (
     calendars,
     events,
     defaultCalendarId,
-    refetchEvents: fetchEvents,
     deleteEvent,
   };
 };

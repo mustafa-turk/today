@@ -38,10 +38,12 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [currentCalendarId, setCurrentCalendarId] = React.useState("all");
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
 
-  const { calendars, events, defaultCalendarId, refetchEvents, deleteEvent } =
-    useCalendarData(currentDate, currentCalendarId);
+  const { calendars, events, defaultCalendarId, deleteEvent } = useCalendarData(
+    currentDate,
+    currentCalendarId
+  );
 
-  const CalendarService = useFocusEffect(
+  useFocusEffect(
     React.useCallback(() => {
       if (route.params?.date) {
         setCurrentDate(new Date(route.params?.date));
@@ -49,10 +51,6 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
       }
     }, [route.params?.date])
   );
-
-  const eventsLabel = `${events.length} ${translator.t(
-    events.length === 1 ? "event" : "events"
-  )}`;
 
   const isCalendarWritable = calendars.find(
     (cal) => cal.id === currentCalendarId
@@ -138,7 +136,9 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
       <View style={styles.eventsContainer}>
         <View style={styles.eventsContainerHeader}>
-          <Text style={styles.eventsContainerHeaderLabel}>{eventsLabel}</Text>
+          <Text style={styles.eventsContainerHeaderLabel}>{`${
+            events.length
+          } ${translator.t(events.length === 1 ? "event" : "events")}`}</Text>
           <Button
             onPress={() =>
               navigation.navigate(SCREENS.EVENT_DETAILS, {
